@@ -1,0 +1,84 @@
+# Gapless contracts. Foundry 1.8.3 (foundryup -i 1.8.3). No fork profile by design (BUILD_PLAN 0).
+[profile.default]
+src = "src"
+out = "out"
+test = "test"
+script = "script"
+libs = ["lib"]
+solc_version = "0.8.37"
+evm_version = "osaka"          # Monad docs: osaka target required; 0.8.37 has zero known bugs
+network = "monad"              # Monad gas model, opcode pricing, 128 KB code limit (Foundry >= 1.8)
+via_ir = false
+optimizer = true
+optimizer_runs = 50            # deploy cost tracks code size and is a one-shot MON budget item
+bytecode_hash = "none"         # Monad verify guide (metadata_hash = "none")
+cbor_metadata = true
+use_literal_content = true
+auto_detect_remappings = false
+ignored_warnings_from = ["lib/"]
+remappings = [
+  "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+  "forge-std/=lib/forge-std/src/",
+]
+fs_permissions = [{ access = "read", path = "./test/fixtures" }]
+gas_reports = ["CoverManager", "CoverVault", "GaplessAccount", "GaplessFactory", "GaplessCreSink"]
+
+[profile.default.fuzz]
+runs = 256
+seed = "0x6761706c657373"
+
+# Default and ci stay fast (64 x 200); `deep` is the 256 x 500 gate, `long` the pre-freeze run. Set here, not
+# inline: inline default pins carried into every profile (TEST_REPORT section 4).
+[profile.default.invariant]
+runs = 64
+depth = 200
+fail_on_revert = false
+max_block_delay = 50000
+call_override = false
+
+[profile.ci]
+verbosity = 2
+
+[profile.ci.fuzz]
+runs = 1024
+seed = "0x6761706c657373"
+
+[profile.ci.invariant]
+runs = 64
+depth = 200
+fail_on_revert = false
+max_block_delay = 50000
+
+[profile.deep.invariant]
+runs = 256
+depth = 500
+fail_on_revert = false
+max_block_delay = 50000
+
+# One fixed-seed long run before the code freeze (BUILD_PLAN 5, Sat).
+[profile.long.invariant]
+runs = 2048
+depth = 500
+fail_on_revert = false
+max_block_delay = 50000
+
+[profile.long.fuzz]
+runs = 10000
+seed = "0x6761706c657373"
+
+[rpc_endpoints]
+monad = "${MONAD_RPC_URL}"
+
+[etherscan]
+monad = { key = "${ETHERSCAN_API_KEY}", chain = 143, url = "https://api.etherscan.io/v2/api?chainid=143" }
+
+[fmt]
+line_length = 120
+tab_width = 4
+bracket_spacing = false
+int_types = "long"
+quote_style = "double"
+number_underscore = "thousands"
+
+[lint]
+lint_on_build = false
