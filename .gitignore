@@ -1,0 +1,33 @@
+# deps and build output
+node_modules/
+dist/
+out/
+cache/
+broadcast/
+
+# secrets
+.env
+.env.*
+!.env.example
+!.env.docker.example
+
+# local tooling and notes
+memory/
+.claude/
+.playwright-mcp/
+CLAUDE.md
+.DS_Store
+
+# research, screenshots and internal hackathon notes
+/0[0-9]*_*.md
+/*.png
+/BOUNTY_AUDIT.md
+/WIN_READINESS.md
+/MAXIMIZATION_STATUS.md
+/PITCH_DECK.md
+/SUBMISSION_COPY.md
+
+deployments/*.tmp
+.cre_build_tmp.js
+backend/docker-compose.override.yml
+.mcp.json
