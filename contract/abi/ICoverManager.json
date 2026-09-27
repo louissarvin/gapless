@@ -1,0 +1,3154 @@
+[
+  {
+    "type": "function",
+    "name": "AUSD",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "EXCHANGE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "PAUSER_ROLE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "RISK_ADMIN_ROLE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "SIGMA_ROLE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "VAULT",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "acceptDefaultAdminTransfer",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "activeCoverOf",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "arm",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "armed",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "beginDefaultAdminTransfer",
+    "inputs": [
+      {
+        "name": "newAdmin",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "cancelCover",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "cancelDefaultAdminTransfer",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "changeDefaultAdminDelay",
+    "inputs": [
+      {
+        "name": "newDelay",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimRefund",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "amountCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "coverNonce",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "defaultAdmin",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "defaultAdminDelay",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "defaultAdminDelayIncreaseWait",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "expire",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "factory",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "finalize",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "topUpCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getCover",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct Cover",
+        "components": [
+          {
+            "name": "account",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "perpId",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "status",
+            "type": "uint8",
+            "internalType": "enum CoverStatus"
+          },
+          {
+            "name": "isLong",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "maxGapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "observed",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "lots",
+            "type": "uint40",
+            "internalType": "uint40"
+          },
+          {
+            "name": "filledLots",
+            "type": "uint40",
+            "internalType": "uint40"
+          },
+          {
+            "name": "stopPNS",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "startBlock",
+            "type": "uint48",
+            "internalType": "uint48"
+          },
+          {
+            "name": "expiryBlock",
+            "type": "uint48",
+            "internalType": "uint48"
+          },
+          {
+            "name": "armedBlock",
+            "type": "uint48",
+            "internalType": "uint48"
+          },
+          {
+            "name": "capCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "escrowCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "rentCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "triggerBlock",
+            "type": "uint48",
+            "internalType": "uint48"
+          },
+          {
+            "name": "triggerTs",
+            "type": "uint40",
+            "internalType": "uint40"
+          },
+          {
+            "name": "refTrigPNS",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "refPostPNS",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "paidCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "armer",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "owedCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "gRealCumCNS",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "slipAllowanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "floorSlackBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "shortBlock",
+            "type": "uint48",
+            "internalType": "uint48"
+          },
+          {
+            "name": "shortSteps",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "minDistanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "warmupBlocks",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "windowBlocks",
+            "type": "uint8",
+            "internalType": "uint8"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getRoleAdmin",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "grantRole",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "hasRole",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "housekeeping",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "max",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "toObserve",
+        "type": "bytes32[]",
+        "internalType": "bytes32[]"
+      },
+      {
+        "name": "toFinalize",
+        "type": "bytes32[]",
+        "internalType": "bytes32[]"
+      },
+      {
+        "name": "toExpire",
+        "type": "bytes32[]",
+        "internalType": "bytes32[]"
+      },
+      {
+        "name": "toVoid",
+        "type": "bytes32[]",
+        "internalType": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isLocked",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isSettling",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "listMarket",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "cfg",
+        "type": "tuple",
+        "internalType": "struct MarketConfig",
+        "components": [
+          {
+            "name": "listed",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "priceDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "lotDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "scale",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "feed",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "feedDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "creRefStore",
+            "type": "address",
+            "internalType": "address"
+          }
+        ]
+      },
+      {
+        "name": "p",
+        "type": "tuple",
+        "internalType": "struct MarketParams",
+        "components": [
+          {
+            "name": "slipAllowanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxGapBpsCap",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "floorSlackBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "refTolBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "minStopDistanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "kDistE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "loadBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "rentAprBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "uKinkBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope1Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope2Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "marketCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "perBlockPayoutCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxLossToDepositBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "impactBpsPerKE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxMatchesClose",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "warmupBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "armTtlBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "exclusiveBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "windowBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "maxDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "sigmaMaxAgeBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "refFreshSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "feedMaxAgeSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minFeeCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "maxCoverNotionalCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "zEdgesE2",
+            "type": "uint16[8]",
+            "internalType": "uint16[8]"
+          },
+          {
+            "name": "gapBpsE2",
+            "type": "uint16[9]",
+            "internalType": "uint16[9]"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "listedPerps",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "liveCount",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "marketConfig",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct MarketConfig",
+        "components": [
+          {
+            "name": "listed",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "priceDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "lotDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "scale",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "feed",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "feedDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "creRefStore",
+            "type": "address",
+            "internalType": "address"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "marketParams",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct MarketParams",
+        "components": [
+          {
+            "name": "slipAllowanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxGapBpsCap",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "floorSlackBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "refTolBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "minStopDistanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "kDistE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "loadBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "rentAprBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "uKinkBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope1Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope2Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "marketCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "perBlockPayoutCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxLossToDepositBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "impactBpsPerKE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxMatchesClose",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "warmupBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "armTtlBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "exclusiveBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "windowBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "maxDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "sigmaMaxAgeBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "refFreshSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "feedMaxAgeSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minFeeCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "maxCoverNotionalCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "zEdgesE2",
+            "type": "uint16[8]",
+            "internalType": "uint16[8]"
+          },
+          {
+            "name": "gapBpsE2",
+            "type": "uint16[9]",
+            "internalType": "uint16[9]"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "marketPaused",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "observe",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "observed",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "openCover",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "p",
+        "type": "tuple",
+        "internalType": "struct CoverParams",
+        "components": [
+          {
+            "name": "perpId",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "isLong",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "lots",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "stopPNS",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "maxGapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "durationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          }
+        ]
+      },
+      {
+        "name": "maxPremiumCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "pauseBuys",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "pauseMarket",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "paused",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "pendingDefaultAdmin",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "newAdmin",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "acceptSchedule",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "pendingDefaultAdminDelay",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "newDelay",
+        "type": "uint48",
+        "internalType": "uint48"
+      },
+      {
+        "name": "effectSchedule",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "postSigma",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "sigmaBlkBpsE2",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "quote",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "p",
+        "type": "tuple",
+        "internalType": "struct CoverParams",
+        "components": [
+          {
+            "name": "perpId",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "isLong",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "lots",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "stopPNS",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "maxGapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "durationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "q",
+        "type": "tuple",
+        "internalType": "struct Quote",
+        "components": [
+          {
+            "name": "notionalCNS",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "capCNS",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "escrowCNS",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "rentCNS",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "feeBpsE2",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "utilAfterBps",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "distanceBps",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "minDistanceBps",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "expiryBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "referencePrice",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "isLong",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "minTs",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "refPNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "nFresh",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "refundOwed",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "refundOwedTotal",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "renounceRole",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "callerConfirmation",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "revokeRole",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "rollbackDefaultAdminDelay",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "scaleOf",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "setFactory",
+    "inputs": [
+      {
+        "name": "factory_",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setMarketParams",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "p",
+        "type": "tuple",
+        "internalType": "struct MarketParams",
+        "components": [
+          {
+            "name": "slipAllowanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxGapBpsCap",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "floorSlackBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "refTolBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "minStopDistanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "kDistE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "loadBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "rentAprBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "uKinkBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope1Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope2Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "marketCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "perBlockPayoutCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxLossToDepositBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "impactBpsPerKE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxMatchesClose",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "warmupBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "armTtlBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "exclusiveBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "windowBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "maxDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "sigmaMaxAgeBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "refFreshSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "feedMaxAgeSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minFeeCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "maxCoverNotionalCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "zEdgesE2",
+            "type": "uint16[8]",
+            "internalType": "uint16[8]"
+          },
+          {
+            "name": "gapBpsE2",
+            "type": "uint16[9]",
+            "internalType": "uint16[9]"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "sigmaOf",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "sigmaBlkBpsE2",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "postedBlock",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "syncCover",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "trigger",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "paidNowCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "unpauseBuys",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "unpauseMarket",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "voidCover",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "watchList",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "max",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "toArm",
+        "type": "bytes32[]",
+        "internalType": "bytes32[]"
+      },
+      {
+        "name": "toTrigger",
+        "type": "bytes32[]",
+        "internalType": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "Armed",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "armer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "bookPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "refPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CoverBought",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "isLong",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "lots",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "stopPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "maxGapBps",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "escrowCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "rentCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "capCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "expiryBlock",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CoverEnded",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum CoverStatus"
+      },
+      {
+        "name": "reason",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum EndReason"
+      },
+      {
+        "name": "refundCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CoverResized",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "newLots",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "releasedCapCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "refundCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DefaultAdminDelayChangeCanceled",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DefaultAdminDelayChangeScheduled",
+    "inputs": [
+      {
+        "name": "newDelay",
+        "type": "uint48",
+        "indexed": false,
+        "internalType": "uint48"
+      },
+      {
+        "name": "effectSchedule",
+        "type": "uint48",
+        "indexed": false,
+        "internalType": "uint48"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DefaultAdminTransferCanceled",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DefaultAdminTransferScheduled",
+    "inputs": [
+      {
+        "name": "newAdmin",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "acceptSchedule",
+        "type": "uint48",
+        "indexed": false,
+        "internalType": "uint48"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Disarmed",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "reason",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum DisarmReason"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "EscrowForfeited",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "amountCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FactorySet",
+    "inputs": [
+      {
+        "name": "factory",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Finalized",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "topUpCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "totalPaidCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "refFinalPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "escrowToVaultCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MarketListed",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "cfg",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct MarketConfig",
+        "components": [
+          {
+            "name": "listed",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "priceDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "lotDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "scale",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "feed",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "feedDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "creRefStore",
+            "type": "address",
+            "internalType": "address"
+          }
+        ]
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MarketParamsSet",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "oldP",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct MarketParams",
+        "components": [
+          {
+            "name": "slipAllowanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxGapBpsCap",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "floorSlackBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "refTolBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "minStopDistanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "kDistE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "loadBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "rentAprBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "uKinkBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope1Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope2Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "marketCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "perBlockPayoutCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxLossToDepositBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "impactBpsPerKE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxMatchesClose",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "warmupBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "armTtlBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "exclusiveBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "windowBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "maxDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "sigmaMaxAgeBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "refFreshSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "feedMaxAgeSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minFeeCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "maxCoverNotionalCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "zEdgesE2",
+            "type": "uint16[8]",
+            "internalType": "uint16[8]"
+          },
+          {
+            "name": "gapBpsE2",
+            "type": "uint16[9]",
+            "internalType": "uint16[9]"
+          }
+        ]
+      },
+      {
+        "name": "newP",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct MarketParams",
+        "components": [
+          {
+            "name": "slipAllowanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxGapBpsCap",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "floorSlackBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "refTolBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "minStopDistanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "kDistE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "loadBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "rentAprBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "uKinkBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope1Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope2Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "marketCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "perBlockPayoutCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxLossToDepositBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "impactBpsPerKE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxMatchesClose",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "warmupBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "armTtlBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "exclusiveBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "windowBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "maxDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "sigmaMaxAgeBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "refFreshSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "feedMaxAgeSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minFeeCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "maxCoverNotionalCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "zEdgesE2",
+            "type": "uint16[8]",
+            "internalType": "uint16[8]"
+          },
+          {
+            "name": "gapBpsE2",
+            "type": "uint16[9]",
+            "internalType": "uint16[9]"
+          }
+        ]
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MarketPauseSet",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "paused",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Observed",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "refPostPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PayoutDeferred",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "owedCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RefundClaimed",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amountCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RefundOwed",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amountCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleAdminChanged",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "previousAdminRole",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "newAdminRole",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleGranted",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleRevoked",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SigmaPosted",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "sigmaBlkBpsE2",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TriggerNoFill",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "limitPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Triggered",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "filledLots",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "realizedCNS",
+        "type": "int256",
+        "indexed": false,
+        "internalType": "int256"
+      },
+      {
+        "name": "gRealCumCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "refTrigPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "paidNowCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "owedCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "AccessControlBadConfirmation",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "AccessControlEnforcedDefaultAdminDelay",
+    "inputs": [
+      {
+        "name": "schedule",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "AccessControlEnforcedDefaultAdminRules",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "AccessControlInvalidDefaultAdmin",
+    "inputs": [
+      {
+        "name": "defaultAdmin",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "AccessControlUnauthorizedAccount",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "neededRole",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "AusdFrozen",
+    "inputs": [
+      {
+        "name": "who",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "BadStatus",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "internalType": "enum CoverStatus"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ConditionNotMet",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "CoverExists",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "CoverExpired",
+    "inputs": [
+      {
+        "name": "expiryBlock",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "CoverShareExceeded",
+    "inputs": [
+      {
+        "name": "capCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "limitCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "DurationOutOfRange",
+    "inputs": [
+      {
+        "name": "blocks",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "FactoryAlreadySet",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "LiquidationBufferTooThin",
+    "inputs": [
+      {
+        "name": "lossPlusCapCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "limitCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "LotsExceedPosition",
+    "inputs": [
+      {
+        "name": "coverLots",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "positionLots",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "MarkStale",
+    "inputs": [
+      {
+        "name": "markTimestamp",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "MarketAlreadyListed",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "MarketNotListed",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "MarketPaused",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "MaxGapOutOfRange",
+    "inputs": [
+      {
+        "name": "bps",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NoReference",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoRefundOwed",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NotAccount",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotArmer",
+    "inputs": [
+      {
+        "name": "caller",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "armer",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NotCoverAccount",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NotionalTooLarge",
+    "inputs": [
+      {
+        "name": "notionalCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ParamOutOfBounds",
+    "inputs": [
+      {
+        "name": "fieldIndex",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "PositionIntact",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "PremiumTooHigh",
+    "inputs": [
+      {
+        "name": "quotedCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "maxCNS",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "SigmaStale",
+    "inputs": [
+      {
+        "name": "postedBlock",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "StopTooClose",
+    "inputs": [
+      {
+        "name": "distanceBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "minBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "StopWrongSide",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "TooEarly",
+    "inputs": [
+      {
+        "name": "readyBlock",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "VenueUnavailable",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "WhitelistingOn",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "WrongSide",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ZeroAddress",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ZeroLots",
+    "inputs": []
+  }
+]
