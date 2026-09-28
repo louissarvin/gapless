@@ -1,0 +1,80 @@
+Gapless canary preflight (read-only)
+Generated 2026-10-06T17:34:49Z (2026-10-07 00:34 WIB) with cast 1.8.3 (cae51ad458 2026-09-15T10:34:23.361078000Z)
+RPC host: https://rpc.monad.xyz
+
+== Chain
+PASS  chain id = 143
+INFO  head block 111098776, timestamp 1791308091, block gas limit 150000000
+
+== Perpl Exchange 0x34B6552d57a35a1D042CcAe1951BD1C370112a6F
+PASS  getContractVersion = 1.7.5
+PASS  EIP-1967 implementation = 0xa9ab97a404a0bca04d6a5b4a39995fea9e791b2a
+PASS  whitelistingEnabled = false
+PASS  isHalted = false
+PASS  getMinAccountOpenCNS = 10000000
+PASS  getPerpFeeSchedule(1) readable: id 1021, taker tier 0 345 ppm, maker tier 0 45 ppm
+
+== BTC perp (id 1), ListMarket preflight and L-06 rule
+INFO  name BTC Perp, symbol BTC
+PASS  priceDecimals = 1
+PASS  lotDecimals = 5
+PASS  status (4 = active) = 4
+PASS  basePricePNS (listMarket requires 0) = 0
+PASS  ignOracle = false
+INFO  mark 856168 (age 6 s), oracle 856258 (age 7 s), best bid 856333, best ask 856334, orders 268
+PASS  mark fresh (<= 60 s refFreshSec)
+PASS  mark inside Perpl limit range [1, 16777215] (L-06)
+INFO  1 lot = 1e-5 BTC = 0.856168 AUSD at mark (scale 1); demo stop 50 bps under mark = 851887
+PASS  demo cover 22 lots: notional 18.741514 AUSD, Cap 0.374830 <= TA/10 = 0.4 (4 AUSD vault)
+PASS  max lots at the 20 AUSD cap = 23 (<= 32, keeper fills <= 2 calls)
+
+== AUSD 0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a
+PASS  decimals = 6
+PASS  DOMAIN_SEPARATOR equals keccak("Agora Dollar", "1", 143, AUSD) = 0x995063441ebf2219c94dce05014a545da4390d2362f99b3d7ad456046678cafe
+
+== Chainlink BTC/USD 0xc1d4C3331635184fA4C3c22fb92211B2Ac9E0546
+PASS  decimals = 8
+PASS  description = "BTC / USD"
+PASS  feed fresh: age 23 s (<= 120 s feedMaxAgeSec)
+INFO  feed answer 85610.88 USD, Perpl mark 85616.8 USD, deviation 0.7 bps
+
+== CRE simulation forwarder 0x9eF6468C5f37b976E57d52054c693269479A784d (GaplessCreSink constructor arg)
+PASS  typeAndVersion = "MockKeystoneForwarder 1.0.0"
+
+== Wallets
+INFO  DEPLOYER 0x9c49383E8Cfe5655596A866350431A17c8D3BAd3: 3.0000 MON, 1.000000 AUSD, nonce 0, AUSD frozen false
+INFO  ADMIN 0x9c49383E8Cfe5655596A866350431A17c8D3BAd3: 3.0000 MON, 1.000000 AUSD, nonce 0, AUSD frozen false
+INFO  KEEPER 0xC0C1EEe02794005eC4ba9ac20A818da42c97a219: 6.0000 MON, 0.000000 AUSD, nonce 0, AUSD frozen false
+INFO  LP 0x45dB77c6a736dE97f1B4A17F38C08d0A2105136b: 1.0000 MON, 3.000000 AUSD, nonce 0, AUSD frozen false
+INFO  RELAY 0x42DDf0c59bd3473836642938dA414D173fA0866a: 2.0000 MON, 0.000000 AUSD, nonce 0, AUSD frozen false
+INFO  TREASURY 0x9c49383E8Cfe5655596A866350431A17c8D3BAd3: 3.0000 MON, 1.000000 AUSD, nonce 0, AUSD frozen false
+INFO  expected addresses if Deploy starts at deployer nonce 0: CoverVault 0xab3CB7b3b28366eD7f6C59DbD2D708890919B289, CoverManager 0xb07C20cb5328d5208A1453521b94beeB3Faa1771, GaplessFactory 0xB1a255e9D4CEdC20998ddC67a7Ec5e0B71bd8777
+
+== Gas price
+INFO  base fee 100 gwei, eth_gasPrice 102 gwei, eth_maxPriorityFeePerGas 2 gwei
+PASS  base + tip = 102 gwei <= planned maxFee 105 gwei
+
+== Expected deploy cost (Monad bills gas limit x price; limit = raw x 103%)
+   price charged = min(base + tip, maxFee) = 102 gwei; inclusion check uses maxFee 105 gwei
+   tx                                              raw gas    gas limit   MON paid    MON bid
+   1 AUSD.approve(predicted vault, 1e6)              71099        73232     0.0075     0.0077
+   2 new CoverVault (+40k real AUSD pull)          3625865      3734641     0.3809     0.3921
+   3 new CoverManager                             10492966     10807755     1.1024     1.1348
+   4 new GaplessFactory (+ GaplessAccount impl)      4620483      4759098     0.4854     0.4997
+   5 CoverManager.setFactory                         59570        61358     0.0063     0.0064
+   6 CoverVault.setManager                           96341        99232     0.0101     0.0104
+   7 CoverManager.grantRole(RISK_ADMIN)              69520        71606     0.0073     0.0075
+   8 CoverManager.grantRole(PAUSER)                  69532        71618     0.0073     0.0075
+   9 CoverManager.grantRole(SIGMA, keeper)           69532        71618     0.0073     0.0075
+   10 CoverVault.grantRole(PAUSER)                   69604        71693     0.0073     0.0075
+   11 new GaplessCreSink                            656143       675828     0.0689     0.0710
+   Deploy.s.sol total (deployer)                               20497679     2.0908     2.1523
+   ListMarket run(): listMarket (RISK_ADMIN)        300000       309000     0.0315     0.0324
+   ListMarket postSigma() (keeper)                   75000        77250     0.0079     0.0081
+   ListMarket seed(): approve (LP)                   71099        73232     0.0075     0.0077
+   ListMarket seed(): deposit 3e6 (LP)              180000       185400     0.0189     0.0195
+INFO  forge defaults (130% limits, maxFee 2 x base + tip) would charge 2.6388 MON in total, and the CoverManager tx alone would need 2.7555 MON of balance to be included: never deploy with defaults
+INFO  deployer (also RISK_ADMIN, PAUSER in the three-wallet canary) pays 2.1223 MON for Deploy + listMarket; inclusion needs up to 2.1847 MON; keep 0.0200 MON after for pause and params
+PASS  deployer balance 3.0000 MON covers it (left after listing about 0.8777 MON)
+
+RESULT: GO (0 FAIL)
