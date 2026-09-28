@@ -1,0 +1,15 @@
+node_modules/
+
+# Secrets: only the example is committed
+.env
+.env.*
+!.env.example
+!.env.docker.example
+
+# Local state (drip ledger, rate windows, job output)
+data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+*.log
