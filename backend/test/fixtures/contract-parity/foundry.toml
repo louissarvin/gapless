@@ -1,0 +1,20 @@
+# Generators for the backend parity fixtures. Reads contract/src only; build output goes to /tmp.
+# forge test --root backend/test/fixtures/contract-parity -vv
+[profile.default]
+src = "."
+test = "."
+out = "/tmp/gapless-contract-parity/out"
+cache_path = "/tmp/gapless-contract-parity/cache"
+libs = []
+solc_version = "0.8.37"
+evm_version = "osaka"
+optimizer = true
+optimizer_runs = 50
+auto_detect_remappings = false
+allow_paths = ["../../../../contract"]
+remappings = [
+  "@openzeppelin/contracts/=../../../../contract/lib/openzeppelin-contracts/contracts/",
+  "forge-std/=../../../../contract/lib/forge-std/src/",
+  "gapless/=../../../../contract/src/",
+]
+fs_permissions = [{ access = "read-write", path = "/tmp/gapless-contract-parity" }]
