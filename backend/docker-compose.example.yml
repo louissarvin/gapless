@@ -1,0 +1,54 @@
+# Hardened single-host deployment example. Copy, set secrets in .env (never commit it), adjust limits.
+# The reverse proxy (TLS, /ws/market routed to 3701) runs on the host and reaches the relay on loopback.
+x-hardening: &hardening
+  image: gapless-backend
+  read_only: true
+  tmpfs:
+    - /tmp:size=16m,mode=1777
+  cap_drop: [ALL]
+  security_opt:
+    - no-new-privileges=true
+  pids_limit: 128
+  restart: unless-stopped
+
+services:
+  relay:
+    <<: *hardening
+    command: ["src/relay/index.ts"]
+    environment:
+      APP_ORIGIN: ${APP_ORIGIN:?set APP_ORIGIN}
+      RELAY_INTERNAL_TOKEN: ${RELAY_INTERNAL_TOKEN:?set RELAY_INTERNAL_TOKEN}
+      MONAD_HTTP_URLS: ${MONAD_HTTP_URLS:-}
+      # The proxy reaches published ports from the bridge gateway; trust that one address only.
+      TRUST_PROXY: ${TRUST_PROXY:-}
+    ports:
+      - "127.0.0.1:3700:3700"
+      - "127.0.0.1:3701:3701"
+    volumes:
+      - gapless-data:/app/data
+    mem_limit: 512m
+    cpus: "1.0"
+    healthcheck:
+      # The slim image has no curl; Bun's fetch does the probe.
+      test: ["CMD", "bun", "-e", "fetch('http://127.0.0.1:3700/healthz').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    stop_grace_period: 15s
+
+  jobs:
+    <<: *hardening
+    command: ["src/jobs/index.ts"]
+    environment:
+      ENVIO_API_TOKEN: ${ENVIO_API_TOKEN:?set ENVIO_API_TOKEN}
+      MONAD_HTTP_URLS: ${MONAD_HTTP_URLS:-}
+    volumes:
+      - gapless-data:/app/data
+    mem_limit: 1g
+    cpus: "1.0"
+    # Jobs waits up to 30 s for a cycle to finish on SIGTERM; Docker's default is 10 s.
+    stop_grace_period: 35s
+
+volumes:
+  gapless-data:
