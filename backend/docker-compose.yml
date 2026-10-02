@@ -1,0 +1,203 @@
+# Monad mainnet canary (chain 143), single host. Runbook: RUNNING.md. Values: deployments/143.json, DEPLOYMENT_143.md.
+# Every compose command needs the secrets file for interpolation: export COMPOSE_ENV_FILES=.env.docker
+# Image is built explicitly (docker build -t gapless-backend:canary .) and never pulled from a registry.
+name: gapless
+
+x-hardening: &hardening
+  image: gapless-backend:${GAPLESS_IMAGE_TAG:-canary}
+  pull_policy: never
+  init: true
+  read_only: true
+  tmpfs:
+    - /tmp:size=16m,mode=1777
+  cap_drop: [ALL]
+  security_opt:
+    - no-new-privileges=true
+  pids_limit: 128
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: "5"
+
+x-common-env: &common-env
+  NODE_ENV: production
+  LOG_LEVEL: info
+  # Root filesystem is read-only; Bun would otherwise try to cache transpiled files under $HOME.
+  BUN_RUNTIME_TRANSPILER_CACHE_PATH: "0"
+  DO_NOT_TRACK: "1"
+
+services:
+  jobs:
+    <<: *hardening
+    # Multi-million-row SQLite processing (7-day window) needs more scratch space
+    # than the shared 16m /tmp; overrides the hardening anchor's tmpfs for this
+    # service only. Root cause of the 2026-10-08 "disk or database is full" loop.
+    tmpfs:
+      - /tmp:size=512m,mode=1777
+    command: ["src/jobs/index.ts"]
+    environment:
+      <<: *common-env
+      ENVIO_API_TOKEN: ${ENVIO_API_TOKEN:?set ENVIO_API_TOKEN in .env.docker}
+      MONAD_HTTP_URLS: ${MONAD_HTTP_URLS:?set MONAD_HTTP_URLS in .env.docker}
+      HYPERSYNC_URL: https://monad.hypersync.xyz
+      JOBS_WINDOW_DAYS: "7"
+      JOBS_INTERVAL_MS: "300000"
+      JOBS_CURVE_NOTIONAL_AUSD: "20"
+      JOBS_NATIVE_STOPS: "true"
+      COVER_MANAGER_ADDRESS: "0xb07C20cb5328d5208A1453521b94beeB3Faa1771"
+      COVER_VAULT_ADDRESS: "0xab3CB7b3b28366eD7f6C59DbD2D708890919B289"
+      GAPLESS_FACTORY_ADDRESS: "0xB1a255e9D4CEdC20998ddC67a7Ec5e0B71bd8777"
+      GAPLESS_CRE_SINK_ADDRESS: "0xB9908Df02187c49cc77905e62bCA73AB28d9FD1B"
+      GAPLESS_START_BLOCK: "111101834"
+      # OUT_DIR and JOBS_DB_PATH come from the image (/app/data/...), same files the relay reads.
+    volumes:
+      - gapless-data:/app/data
+    networks: [jobs]
+    mem_limit: 1g
+    memswap_limit: 1g
+    cpus: "1.0"
+    healthcheck:
+      # No HTTP server: healthy while summary.json is under 15 min old (the relay flags stale past 15 min).
+      test: ["CMD", "bun", "-e", "try{process.exit(Date.now()-require('fs').statSync(process.env.OUT_DIR+'/summary.json').mtimeMs<900000?0:1)}catch{process.exit(1)}"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      # The first run backfills the 7-day window before writing anything.
+      start_period: 30m
+    # Jobs waits up to 30 s for a cycle to finish on SIGTERM; Docker's default is 10 s.
+    stop_grace_period: 35s
+
+  relay:
+    <<: *hardening
+    command: ["src/relay/index.ts"]
+    depends_on:
+      jobs:
+        condition: service_started
+    environment:
+      <<: *common-env
+      MONAD_HTTP_URLS: ${MONAD_HTTP_URLS:?set MONAD_HTTP_URLS in .env.docker}
+      MONAD_WS_URL: ${MONAD_WS_URL:?set MONAD_WS_URL in .env.docker}
+      RELAY_INTERNAL_TOKEN: ${RELAY_INTERNAL_TOKEN:?set RELAY_INTERNAL_TOKEN in .env.docker}
+      # Blank is unset; required only once SPONSOR_ENABLED=true.
+      RELAY_KEY: ${RELAY_KEY:-}
+      APP_ORIGIN: ${APP_ORIGIN:?set APP_ORIGIN in .env.docker}
+      # Published ports forward to the container interface, so bind all interfaces inside the container.
+      HOST: 0.0.0.0
+      PORT: "3700"
+      WS_PORT: "3701"
+      # The host reverse proxy reaches the loopback-published ports from this network's gateway (pinned below).
+      TRUST_PROXY: 172.28.143.1
+      RATE_LIMIT_MAX: "120"
+      RATE_LIMIT_WINDOW_MS: "60000"
+      PERPL_API_URL: https://app.perpl.xyz/api
+      PERPL_WS_URL: wss://app.perpl.xyz/ws/v1/market-data
+      PERPL_MARKET_IDS: "1,10"
+      GAPLESS_FACTORY_ADDRESS: "0xB1a255e9D4CEdC20998ddC67a7Ec5e0B71bd8777"
+      # Plain http is accepted only for *.internal hosts; the alias lives on the private gapless network.
+      KEEPER_INTERNAL_URL: http://keeper.internal:3702
+      SIGMA_REFRESH_PER_ACCOUNT_PER_DAY: "6"
+      STRICT_RESERVE_SPACING: "false"
+      # Flip only with RELAY_KEY in .env.docker and SPONSOR_DEMO_OWNER added here.
+      SPONSOR_ENABLED: "false"
+      SPONSOR_ALLOWLIST_ONLY: "true"
+      RELAY_DAILY_SPEND_CAP_WEI: "1000000000000000000"
+      DRIP_WEI: "500000000000000000"
+      DAILY_CREATE_CAP: "6"
+      TOTAL_CREATE_CAP: "6"
+      CREATES_PER_IP_PER_DAY: "5"
+      ACTIVATIONS_PER_IP_PER_DAY: "10"
+      DAILY_ACTIVATION_CAP: "6"
+      SPONSOR_GRANT_MAX_PER_TRADE_CNS: "25000000"
+      SPONSOR_GRANT_MAX_PER_DAY_CNS: "100000000"
+      SPONSOR_GRANT_MAX_TTL_S: "21600"
+      # DB_PATH, GAP_INDEX_DIR and JOBS_DB_PATH come from the image (/app/data/...).
+    ports:
+      # Loopback only: TLS terminates at the host reverse proxy. Never publish on 0.0.0.0.
+      - "127.0.0.1:3700:3700"
+      - "127.0.0.1:3701:3701"
+    # Shared with jobs, read-write in both: a read-only WAL open needs to create -shm/-wal.
+    volumes:
+      - gapless-data:/app/data
+    networks:
+      gapless:
+        aliases: [relay.internal]
+    mem_limit: 512m
+    memswap_limit: 512m
+    cpus: "1.0"
+    healthcheck:
+      # The slim image has no curl; Bun's fetch does the probe.
+      test: ["CMD", "bun", "-e", "fetch('http://127.0.0.1:3700/healthz').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    # Relay forces exit 10 s after SIGTERM.
+    stop_grace_period: 15s
+
+  keeper:
+    <<: *hardening
+    command: ["src/keeper/index.ts"]
+    # service_started, not healthy: arms and triggers never wait on the relay feed.
+    depends_on:
+      relay:
+        condition: service_started
+    environment:
+      <<: *common-env
+      MONAD_HTTP_URLS: ${MONAD_HTTP_URLS:?set MONAD_HTTP_URLS in .env.docker}
+      MONAD_WS_URL: ${MONAD_WS_URL:?set MONAD_WS_URL in .env.docker}
+      KEEPER_KEY: ${KEEPER_KEY:?set KEEPER_KEY in .env.docker}
+      RELAY_INTERNAL_TOKEN: ${RELAY_INTERNAL_TOKEN:?set RELAY_INTERNAL_TOKEN in .env.docker}
+      COVER_MANAGER_ADDRESS: "0xb07C20cb5328d5208A1453521b94beeB3Faa1771"
+      RELAY_WS_URL: ws://relay.internal:3701/ws/market
+      LISTED_PERPS: "1"
+      # Reachable only on the private gapless network (no published port); every route needs the bearer token.
+      KEEPER_HOST: 0.0.0.0
+      KEEPER_PORT: "3702"
+      KEEPER_DAILY_SPEND_CAP_WEI: "4600000000000000000"
+      KEEPER_HOTPATH_RESERVE_WEI: "2650000000000000000"
+      KEEPER_LOW_BALANCE_WEI: "2000000000000000000"
+      KEEPER_ARM_REPEAT_CAP_WEI: "200000000000000000"
+      # KEEPER_SPEND_ALERT_WEI and KEEPER_ZERO_PAID_CAP_WEI unset on purpose (80% of cap, 1.4 MON).
+      KEEPER_HEADS: monadNewHeads
+      KEEPER_LOG_CHUNK_BLOCKS: "1000"
+      STRICT_RESERVE_SPACING: "false"
+      # KEEPER_DB_PATH comes from the image (/app/data/keeper.sqlite) on the keeper's own volume.
+    volumes:
+      - gapless-keeper-data:/app/data
+    networks:
+      gapless:
+        aliases: [keeper.internal]
+    mem_limit: 512m
+    memswap_limit: 512m
+    cpus: "1.0"
+    healthcheck:
+      # /healthz requires the bearer token; the probe reads it from the container env, never the command line.
+      test: ["CMD", "bun", "-e", "fetch('http://127.0.0.1:3702/healthz',{headers:{authorization:'Bearer '+process.env.RELAY_INTERNAL_TOKEN}}).then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      # Boot can wait up to 35 s for the signer lease after a crash.
+      start_period: 60s
+    # Keeper waits up to 8 s for an in-flight send to settle its ledger row.
+    stop_grace_period: 15s
+
+networks:
+  # relay and keeper only. Pinned so TRUST_PROXY names a fixed gateway; change both together.
+  gapless:
+    name: gapless
+    ipam:
+      config:
+        - subnet: 172.28.143.0/24
+          gateway: 172.28.143.1
+  # jobs talks to nothing local, so it cannot reach the keeper port.
+  jobs:
+    name: gapless-jobs
+
+# Fixed names so a different project name never starts on empty ledgers (keeper spend caps live in keeper.sqlite).
+volumes:
+  gapless-data:
+    name: gapless-data
+  gapless-keeper-data:
+    name: gapless-keeper-data
