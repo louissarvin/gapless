@@ -1,0 +1,325 @@
+@import '@heroui/styles';
+
+@import '@fontsource/instrument-serif/400.css';
+@import '@fontsource/instrument-serif/400-italic.css';
+@import '@fontsource/open-runde/400.css';
+@import '@fontsource/open-runde/500.css';
+@import '@fontsource/open-runde/600.css';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+/*
+ * Gapless dark theme (DESIGN.md section 2, 11.2). Overrides HeroUI v3's
+ * default dark tokens; unlayered so it always wins over @heroui/styles'
+ * `@layer theme` regardless of import order. The app is dark-only: `.dark`
+ * on <html> is the only theme class ever applied (no light mode, no toggle).
+ */
+.dark {
+  --background: #000000;
+  --foreground: #ffffff;
+
+  --surface: #1c1c1e;
+  --surface-foreground: #ffffff;
+  --surface-secondary: #2c2c2e;
+  --surface-secondary-foreground: #ffffff;
+  --surface-tertiary: #3a3a3c;
+  --surface-tertiary-foreground: #ffffff;
+
+  --overlay: #1c1c1e;
+  --overlay-foreground: #ffffff;
+
+  --muted: #aeaeb2;
+
+  --default: #2c2c2e;
+  --default-foreground: #ffffff;
+
+  --field-background: #2c2c2e;
+  --field-foreground: #ffffff;
+  --field-placeholder: #aeaeb2;
+  --field-border: #48484a;
+
+  /*
+   * r2 (DESIGN 2.3, 2.6, 11.2): HeroUI `accent` is painted almost only as a
+   * fill, so it maps to the fill `#6E54FF`, not the text tint. HeroUI's dark
+   * theme derives `accent-soft-foreground`, `accent-hover` and `focus` from
+   * `accent` via color-mix, which would leak the fill into text contexts
+   * (2.90 to 4.38 contrast, failing AA) — each is overridden explicitly below.
+   */
+  --accent: #6e54ff;
+  --accent-foreground: #ffffff;
+  --accent-hover: #6e54ff;
+  --accent-soft: color-mix(in oklab, #6e54ff 16%, transparent);
+  --accent-soft-foreground: #a48fff;
+
+  --success: #30d158;
+  --success-foreground: #000000;
+
+  --warning: #ff9230;
+  --warning-foreground: #000000;
+
+  --danger: #ff6165;
+  --danger-foreground: #000000;
+
+  --border: #48484a;
+  --separator: #3a3a3c;
+  --focus: #a48fff;
+  --link: #a48fff;
+
+  --backdrop: rgba(0, 0, 0, 0.64);
+
+  /* Radius up to 32px (DESIGN 4.1): base 8px gives 3xl = 24px (cards), 4xl = 32px (sheets). */
+  --radius: 0.5rem;
+  --field-radius: 1rem;
+
+  /*
+   * Pin named radii to DESIGN 4.1/4.2 (review C1 fix). HeroUI derives
+   * `--radius-xs` through `--radius-xl` as multiples of `--radius` (8px),
+   * so Tailwind's `rounded-md` resolved to 6px instead of the 16px token.
+   * Overriding the derived variables directly makes the class names equal
+   * the design tokens, instead of overriding `rounded-md` everywhere it is used.
+   */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
+
+@theme {
+  --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-sans:
+    'Open Runde', 'Inter Variable', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
+  --font-num: 'Inter Variable', 'Open Runde', sans-serif;
+  --font-mono:
+    'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Market semantics (DESIGN 2.4): direction is never color-only, pair with a sign or arrow. */
+  --color-up: #30d158;
+  --color-down: #ff6165;
+  --color-loss-fill: #ff4245;
+  --color-caution: #ffd600;
+
+  /* Triggered/Observed status (DESIGN 2.5): HIG blue, explicitly not purple so a
+     status chip never reads as tappable next to the new accent. */
+  --color-status-blue-dot: #0091ff;
+  --color-status-blue-text: #5cb8ff;
+
+  /* Porcelain primary button (DESIGN 5.1): HeroUI's accent fill is purple, this is the one exception. */
+  --color-porcelain: #f5f5f7;
+  --color-porcelain-foreground: #1d1d1f;
+  --color-porcelain-pressed: #ededf2;
+
+  /* Text tiers beyond HeroUI's foreground/muted pair (DESIGN 2.2). */
+  --color-tertiary: #8e8e93;
+  --color-disabled: #636366;
+
+  /*
+   * Purple accent, split into two tokens (DESIGN 2.3, r2). `color-accent` is
+   * text-weight (links, icons, focus ring, selected tab). `color-accent-fill`
+   * only carries white glyphs (switch on, progress fill, HeroUI fills) — the
+   * fill fails contrast as text (2.90 to 4.38), the text tint fails under
+   * white glyphs (2.64), so they are never interchangeable.
+   */
+  --color-accent: #a48fff;
+  --color-accent-pressed: #8f78ff;
+  --color-accent-fill: #6e54ff;
+  --color-accent-fill-pressed: #5b40f5;
+  --color-accent-tint: color-mix(in oklab, #6e54ff 16%, transparent);
+  --color-accent-glow: rgba(110, 84, 255, 0.6);
+
+  /* Tab bar glass (DESIGN 2.1, r2): 88%, denser than the 80% nav/sheet glass,
+     because its 12px labels failed contrast at 80% with content scrolling beneath. */
+  --color-glass: rgba(0, 0, 0, 0.8);
+  --color-glass-tab: rgba(0, 0, 0, 0.88);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply m-0 font-sans antialiased;
+  }
+
+  ::selection {
+    /* DESIGN 2.6: `#6E54FF` at 40%, not the 32% tint of the old blue accent. */
+    background: color-mix(in oklab, var(--color-accent-fill) 40%, transparent);
+    color: #ffffff;
+  }
+}
+
+/*
+ * Tabular numeric type roles (DESIGN 3.2). Every value slot uses one of
+ * these. Defined with @utility, not a plain class, so responsive variants
+ * (e.g. `md:type-display-xl`) actually generate CSS (DESIGN 10, landing hero).
+ */
+@utility type-display-hero {
+  /* DESIGN 3.2, r2: landing hero only, max-width 12ch. Scales up at the same
+     breakpoints Tailwind's `md`/`lg` use (768px / 1024px). */
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -1.12px;
+  max-width: 12ch;
+
+  @media (width >= 48rem) {
+    font-size: 88px;
+    line-height: 0.96;
+    letter-spacing: -1.76px;
+  }
+  @media (width >= 64rem) {
+    font-size: 120px;
+    line-height: 0.92;
+    letter-spacing: -2.4px;
+  }
+}
+@utility type-display-xl {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.72px;
+}
+@utility type-display {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.48px;
+}
+@utility type-title-1 {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.34px;
+}
+@utility type-title-2 {
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.27;
+  letter-spacing: -0.4px;
+}
+@utility type-headline {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.29;
+  letter-spacing: -0.22px;
+}
+@utility type-body {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.47;
+  letter-spacing: -0.22px;
+}
+@utility type-callout {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.13px;
+}
+@utility type-label {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.33;
+  letter-spacing: -0.13px;
+}
+@utility type-footnote {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.38;
+  letter-spacing: -0.04px;
+}
+@utility type-caption {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.33;
+  letter-spacing: 0;
+}
+@utility type-num-hero {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.89px;
+}
+@utility type-num-lg {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.07;
+  letter-spacing: -0.59px;
+}
+@utility type-num {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.29;
+  letter-spacing: -0.22px;
+}
+@utility type-num-sm {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.54;
+  letter-spacing: -0.04px;
+}
+@utility type-mono {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.47;
+  letter-spacing: 0;
+}
+@utility type-mono-sm {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.38;
+  letter-spacing: 0;
+}
+
+/*
+ * Big card (DESIGN 5.4.1, r3): the default container for a screen's primary
+ * object. Radius, fill and the top-edge highlight are fixed; padding and
+ * min-height are supplied per use (padding via normal spacing utilities,
+ * min-height via `--card-min-h` so zoom/larger text grows the card instead
+ * of clipping it, per the "never a fixed height" rule).
+ */
+@utility card-big {
+  border-radius: 32px;
+  background-color: #1c1c1e;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  min-height: var(--card-min-h, auto);
+}
+
+/* Tappable big card (DESIGN 5.4.1, 7.8): press scale plus a brighter top edge on hover. */
+@utility card-big-tappable {
+  cursor: pointer;
+  transition: transform 120ms ease-out;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transition: box-shadow 200ms var(--ease-out-quart, ease-out);
+    }
+  }
+}
