@@ -1,0 +1,89 @@
+# yaml-language-server: $schema=./node_modules/envio/evm.schema.json
+name: gapless-indexer
+description: Gapless cover protocol on Monad mainnet (CoverManager, CoverVault, GaplessFactory, GaplessAccount clones, CRE sink)
+address_format: lowercase
+# Every handler records the tx hash (block number, timestamp and hash are default block fields).
+# Config level (not per-handler `fields`) so createTestIndexer simulate items are typed with it too.
+field_selection:
+  transaction_fields:
+    - hash
+# Lines ending in a deploy marker comment (format in README.md) are rewritten by scripts/sync-abi.ts from deployments/143.json (W5).
+# Until then the defaults are inert placeholders with no code onchain; set the ENVIO_* env vars to override.
+contracts:
+  - name: CoverManager
+    abi_file_path: ./abis/CoverManager.json
+    events:
+      - event: FactorySet
+      - event: MarketListed
+      - event: MarketParamsSet
+      - event: SigmaPosted
+      - event: CoverBought
+      - event: CoverResized
+      - event: Armed
+      - event: Disarmed
+      - event: TriggerNoFill
+      - event: Triggered
+      - event: Observed
+      - event: Finalized
+      - event: CoverEnded
+      - event: PayoutDeferred
+      - event: EscrowForfeited
+      - event: RefundOwed
+      - event: RefundClaimed
+      - event: MarketPauseSet
+      - event: Paused
+      - event: Unpaused
+      - event: RoleGranted
+      - event: RoleRevoked
+      - event: DefaultAdminTransferScheduled
+  - name: CoverVault
+    abi_file_path: ./abis/CoverVault.json
+    events:
+      - event: Deposit
+      - event: Withdraw
+      - event: Transfer
+      - event: RedeemRequested
+      - event: RedeemClaimed
+      - event: Reserved
+      - event: Released
+      - event: Paid
+      - event: PremiumReceived
+      - event: OwedUpdated
+      - event: ConfigSet
+      - event: ManagerSet
+      - event: Paused
+      - event: Unpaused
+      - event: RoleGranted
+      - event: RoleRevoked
+      - event: DefaultAdminTransferScheduled
+  - name: GaplessFactory
+    abi_file_path: ./abis/GaplessFactory.json
+    events:
+      - event: AccountCreated
+  # Clones have no static address: registered from GaplessFactory.AccountCreated (src/handlers/factory.ts).
+  - name: GaplessAccount
+    abi_file_path: ./abis/GaplessAccount.json
+    events:
+      - event: OperatorSet
+      - event: PerplActivated
+      - event: Traded
+      - event: Withdrawn
+      - event: Swept
+      - event: Credited
+  - name: GaplessCreSink
+    abi_file_path: ./abis/GaplessCreSink.json
+    events:
+      - event: CreReport
+chains:
+  # Monad mainnet over HyperSync (no rpc block). Envio Cloud needs no HyperSync token; local runs need ENVIO_API_TOKEN.
+  - id: 143
+    start_block: ${ENVIO_START_BLOCK:-111101834} # @deploy:deployBlock
+    contracts:
+      - name: CoverManager
+        address: "${ENVIO_COVER_MANAGER_ADDRESS:-0xb07C20cb5328d5208A1453521b94beeB3Faa1771}" # @deploy:CoverManager
+      - name: CoverVault
+        address: "${ENVIO_COVER_VAULT_ADDRESS:-0xab3CB7b3b28366eD7f6C59DbD2D708890919B289}" # @deploy:CoverVault
+      - name: GaplessFactory
+        address: "${ENVIO_GAPLESS_FACTORY_ADDRESS:-0xB1a255e9D4CEdC20998ddC67a7Ec5e0B71bd8777}" # @deploy:GaplessFactory
+      - name: GaplessCreSink
+        address: "${ENVIO_GAPLESS_CRE_SINK_ADDRESS:-0xB9908Df02187c49cc77905e62bCA73AB28d9FD1B}" # @deploy:GaplessCreSink
