@@ -1,0 +1,50 @@
+{
+  "chainId": 143,
+  "deployBlock": 111101834,
+  "deployedAt": "2026-10-06T17:50:17Z",
+  "gitCommit": null,
+  "toolchain": {
+    "foundry": "1.8.3",
+    "solc": "0.8.37"
+  },
+  "contracts": {
+    "CoverVault": {
+      "address": "0xab3CB7b3b28366eD7f6C59DbD2D708890919B289",
+      "creationTx": "0xdaae9abe7862d58153dc2e8c4b6d24bc91443a8cd2c0b569beb8f3fec7333332"
+    },
+    "CoverManager": {
+      "address": "0xb07C20cb5328d5208A1453521b94beeB3Faa1771",
+      "creationTx": "0x5c1992a0b518223931f3907fbc45d8144a2f4cf03c4bc5e36a9a314564396d9c"
+    },
+    "GaplessFactory": {
+      "address": "0xB1a255e9D4CEdC20998ddC67a7Ec5e0B71bd8777",
+      "creationTx": "0x405c2b295b1f8cc835408ef3111bab636f1b6f55d4ec4bf2b5122a047881fac6"
+    },
+    "GaplessAccountImpl": {
+      "address": "0xc175a64BcE88dC4AC0Cfefd20daf8826b8c88cDC",
+      "creationTx": null
+    },
+    "GaplessCreSink": {
+      "address": "0xB9908Df02187c49cc77905e62bCA73AB28d9FD1B",
+      "creationTx": "0xfaa6be3d417d5c6cbd261c61514b3e2e8c9244d315d18ea7bd7d655ea16aff55"
+    }
+  },
+  "external": {
+    "PerplExchange": "0x34B6552d57a35a1D042CcAe1951BD1C370112a6F",
+    "AUSD": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a",
+    "BtcUsdFeed": "0xc1d4C3331635184fA4C3c22fb92211B2Ac9E0546",
+    "CreForwarderSim": "0x9eF6468C5f37b976E57d52054c693269479A784d"
+  },
+  "roles": {
+    "admin": "0x9c49383E8Cfe5655596A866350431A17c8D3BAd3",
+    "riskAdmin": "0x9c49383E8Cfe5655596A866350431A17c8D3BAd3",
+    "pauser": "0x9c49383E8Cfe5655596A866350431A17c8D3BAd3",
+    "keeper": "0xC0C1EEe02794005eC4ba9ac20A818da42c97a219",
+    "treasury": "0x9c49383E8Cfe5655596A866350431A17c8D3BAd3"
+  },
+  "listing": {
+    "perpId": 1,
+    "block": 111105424,
+    "tx": "0x2ac7771b33de7a1d86ab338c77df2a76764265b3dde4f2389bd54addffff39c7"
+  }
+}
