@@ -1,0 +1,28 @@
+{
+  "name": "gapless-indexer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Envio HyperIndex indexer for Gapless on Monad mainnet (chain 143)",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@10.32.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "codegen": "envio codegen",
+    "dev": "envio dev",
+    "start": "envio start",
+    "tsc": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "envio": "3.12.1",
+    "viem": "2.57.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.12.2",
+    "typescript": "6.0.3",
+    "vitest": "4.1.0"
+  }
+}

@@ -1,0 +1,6 @@
+node_modules/
+# V3 codegen output (Envio Cloud regenerates it)
+.envio/
+.env
+.env.*
+*.log
