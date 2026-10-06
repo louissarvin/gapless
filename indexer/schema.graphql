@@ -1,0 +1,405 @@
+# Units: CNS = AUSD 6 decimals, PNS = Perpl price units (per-perp priceDecimals), LNS = Perpl lot units.
+# Addresses are lowercase (config address_format). Block numbers and timestamps are Int (unix seconds).
+
+enum Side {
+  LONG
+  SHORT
+}
+
+"Mirrors CoverStatus in contract/src/types/GaplessTypes.sol. ARMED past armTtlBlocks reads as LIVE onchain (lazy); compare armedBlock with Market.armTtlBlocks."
+enum CoverStatus {
+  LIVE
+  ARMED
+  TRIGGERED
+  FINALIZED
+  CANCELLED
+  EXPIRED
+  VOIDED
+}
+
+"Mirrors EndReason in GaplessTypes.sol."
+enum CoverEndReason {
+  NONE
+  OWNER_CANCEL
+  EXPIRED
+  POSITION_REDUCED
+  POSITION_CLOSED_OR_FLIPPED
+  LIQUIDATED_OR_ADL
+}
+
+enum CoverEventKind {
+  BOUGHT
+  RESIZED
+  ARMED
+  DISARMED
+  TRIGGER_NO_FILL
+  TRIGGERED
+  OBSERVED
+  FINALIZED
+  ENDED
+  PAYOUT_DEFERRED
+  ESCROW_FORFEITED
+}
+
+enum VaultFlowKind {
+  DEPOSIT
+  WITHDRAW
+  REDEEM_REQUESTED
+  REDEEM_CLAIMED
+  RESERVED
+  RELEASED
+  PAID
+  PREMIUM
+}
+
+"One cover, keyed by coverId (bytes32 hex)."
+type Cover {
+  id: ID!
+  account: GaplessAccountEntity!
+  "Account owner at purchase (null if the AccountCreated log was not indexed)."
+  owner: String @index
+  market: Market!
+  perpId: Int!
+  side: Side!
+  "Current lots (CoverResized shrinks it)."
+  lots: BigInt!
+  initialLots: BigInt!
+  stopPNS: BigInt!
+  maxGapBps: Int!
+  "lots x stop x scale at purchase."
+  notionalCNS: BigInt!
+  "Current escrow; a resize keeps ceil(escrow x newLots / oldLots) like PayoutMath.resize."
+  escrowCNS: BigInt!
+  rentCNS: BigInt!
+  "Current cap. A finalize that defers a payout also shrinks it onchain without a manager event; read getCover for that case."
+  capCNS: BigInt!
+  expiryBlock: Int!
+  status: CoverStatus! @index
+  endReason: CoverEndReason!
+  observed: Boolean!
+  armedBlock: Int
+  armer: String
+  armCount: Int!
+  disarmCount: Int!
+  noFillCount: Int!
+  triggerBlock: Int
+  refTrigPNS: BigInt
+  refPostPNS: BigInt
+  refFinalPNS: BigInt
+  "triggerBlock - armedBlock when the first fill came from an armed cover; null on the Live fast path."
+  armToTriggerBlocks: Int
+  filledLots: BigInt!
+  gRealCumCNS: BigInt!
+  "Sum of Triggered.paidNowCNS, replaced by Finalized.totalPaidCNS. A finalize that leaves owedCNS > 0 pays without a manager event (see vault Paid)."
+  paidCNS: BigInt!
+  owedCNS: BigInt!
+  "Escrow refunds sent to the account (resize, end, finalize). Failed transfers move to GaplessAccountEntity.refundOwedCNS."
+  refundCNS: BigInt!
+  escrowForfeitedCNS: BigInt!
+  escrowToVaultCNS: BigInt!
+  boughtBlock: Int! @index
+  boughtTimestamp: Int!
+  boughtTx: String!
+  endedBlock: Int
+  endedTimestamp: Int
+  endedTx: String
+  updatedBlock: Int!
+  events: [CoverEvent!]! @derivedFrom(field: "cover")
+  fills: [Fill!]! @derivedFrom(field: "cover")
+}
+
+"One row per cover lifecycle log (drives the /covers/:id stepper). params holds every decoded event field as a string."
+type CoverEvent {
+  id: ID!
+  cover: Cover!
+  kind: CoverEventKind!
+  blockNumber: Int! @index
+  timestamp: Int!
+  txHash: String!
+  logIndex: Int!
+  "Armed: armer."
+  actor: String
+  "Main amount: Triggered paidNow, Finalized topUp, Ended or Resized refund, PayoutDeferred owed, EscrowForfeited amount."
+  amountCNS: BigInt
+  "Armed bookPNS, TriggerNoFill limitPNS."
+  pricePNS: BigInt
+  "Armed refPNS, Triggered refTrigPNS, Observed refPostPNS, Finalized refFinalPNS."
+  refPNS: BigInt
+  "Triggered filledLots, Resized newLots."
+  lots: BigInt
+  "Disarmed or Ended reason."
+  reason: String
+  params: Json!
+}
+
+"One row per Triggered log (first fill and remainders)."
+type Fill {
+  id: ID!
+  cover: Cover!
+  perpId: Int!
+  isFirst: Boolean!
+  blockNumber: Int! @index
+  timestamp: Int!
+  txHash: String!
+  logIndex: Int!
+  filledLots: BigInt!
+  realizedCNS: BigInt!
+  gRealCumCNS: BigInt!
+  refTrigPNS: BigInt!
+  paidNowCNS: BigInt!
+  owedCNS: BigInt!
+  "From the receipt (MakerOrderFilledV2 of this perp between the previous Triggered log and this one); null when the receipt Effect is unavailable."
+  makerCount: Int
+  printLots: BigInt
+  vwapPNS: BigInt
+  prints: [TriggerPrint!]! @derivedFrom(field: "fill")
+}
+
+"One maker fill inside a Gapless trigger tx (N-04 stop-hunt monitoring)."
+type TriggerPrint {
+  id: ID!
+  fill: Fill!
+  cover: Cover!
+  perpId: Int!
+  makerAccountId: BigInt! @index
+  orderId: BigInt!
+  pricePNS: BigInt!
+  lotLNS: BigInt!
+  blockNumber: Int!
+  txHash: String!
+  logIndex: Int!
+}
+
+"One listed market, keyed by perpId."
+type Market {
+  id: ID!
+  perpId: Int!
+  priceDecimals: Int!
+  lotDecimals: Int!
+  scale: BigInt!
+  feed: String!
+  feedDecimals: Int!
+  creRefStore: String!
+  listedBlock: Int!
+  listedTx: String!
+  slipAllowanceBps: Int!
+  maxGapBpsCap: Int!
+  floorSlackBps: Int!
+  refTolBps: Int!
+  minStopDistanceBps: Int!
+  marketCapBps: Int!
+  perBlockPayoutCapBps: Int!
+  maxMatchesClose: Int!
+  warmupBlocks: Int!
+  armTtlBlocks: Int!
+  exclusiveBlocks: Int!
+  windowBlocks: Int!
+  minDurationBlocks: Int!
+  maxDurationBlocks: Int!
+  minFeeCNS: BigInt!
+  maxCoverNotionalCNS: BigInt!
+  "Full MarketParams as last set (numbers as strings)."
+  params: Json!
+  paramsUpdatedBlock: Int!
+  sigmaBlkBpsE2: Int
+  sigmaPostedBlock: Int
+  sigmaPosts: Int!
+  paused: Boolean!
+  "Non-terminal covers (Live, Armed, Triggered)."
+  liveCount: Int!
+  coverCount: Int!
+  covers: [Cover!]! @derivedFrom(field: "market")
+  samples: [StalenessSample!]! @derivedFrom(field: "market")
+}
+
+"StalenessSampler block handler: Perpl getPerpetualInfo at the block (historical eth_call). Gaps mean the RPC was unavailable."
+type StalenessSample {
+  id: ID!
+  market: Market!
+  perpId: Int!
+  blockNumber: Int! @index
+  timestamp: Int!
+  markPNS: BigInt!
+  markAgeSec: Int!
+  oraclePNS: BigInt!
+  oracleAgeSec: Int!
+  lastPNS: BigInt!
+  lastAgeSec: Int!
+  bestBidPNS: BigInt
+  bestAskPNS: BigInt
+  "abs(mark - oracle) / oracle in bps (floor); null when oracle is 0."
+  markOracleDiffBps: Int
+}
+
+"Vault money movements. *AfterCNS fields mirror the vault's internal accounting after this log."
+type VaultFlow {
+  id: ID!
+  kind: VaultFlowKind! @index
+  account: String @index
+  perpId: Int
+  assetsCNS: BigInt!
+  shares: BigInt
+  requestId: BigInt
+  toLpsCNS: BigInt
+  toTreasuryCNS: BigInt
+  grossAssetsAfterCNS: BigInt!
+  totalAssetsAfterCNS: BigInt!
+  reservedTotalAfterCNS: BigInt!
+  blockNumber: Int! @index
+  timestamp: Int!
+  txHash: String!
+  logIndex: Int!
+}
+
+type RedeemRequest {
+  id: ID!
+  requestId: BigInt!
+  lp: LiquidityProvider!
+  shares: BigInt!
+  assetsAtRequestCNS: BigInt!
+  claimableBlock: Int!
+  requestedBlock: Int!
+  requestedTimestamp: Int!
+  requestTx: String!
+  claimed: Boolean!
+  claimedAssetsCNS: BigInt
+  receiver: String
+  claimedBlock: Int
+  claimTx: String
+}
+
+"Vault share holder. The 0xdead seed holder is tracked but excluded from Stats.lpCount."
+type LiquidityProvider {
+  id: ID!
+  shares: BigInt!
+  escrowedShares: BigInt!
+  depositedCNS: BigInt!
+  claimedCNS: BigInt!
+  deposits: Int!
+  redeemRequests: Int!
+  firstDepositBlock: Int
+  lastActivityBlock: Int!
+  requests: [RedeemRequest!]! @derivedFrom(field: "lp")
+}
+
+"A GaplessAccount clone, keyed by clone address."
+type GaplessAccountEntity {
+  id: ID!
+  owner: String! @index
+  createdBlock: Int!
+  createdTimestamp: Int!
+  createdTx: String!
+  "Current operator key; zero address when none."
+  operator: String! @index
+  operatorExpiry: BigInt!
+  maxNotionalPerTradeCNS: BigInt!
+  maxNotionalPerDayCNS: BigInt!
+  operatorUpdatedBlock: Int!
+  "0 until PerplActivated."
+  perplAccountId: BigInt!
+  perplActivatedBlock: Int
+  perplActivationDepositCNS: BigInt
+  tradeCount: Int!
+  coverCount: Int!
+  sweptCNS: BigInt!
+  withdrawnCNS: BigInt!
+  creditedCNS: BigInt!
+  creditedToPerplCNS: BigInt!
+  refundOwedCNS: BigInt!
+  refundClaimedCNS: BigInt!
+  covers: [Cover!]! @derivedFrom(field: "account")
+  trades: [Trade!]! @derivedFrom(field: "account")
+}
+
+type Trade {
+  id: ID!
+  account: GaplessAccountEntity!
+  perpId: Int!
+  orderType: Int!
+  lotLNS: BigInt!
+  pricePNS: BigInt!
+  by: String!
+  byOwner: Boolean!
+  blockNumber: Int! @index
+  timestamp: Int!
+  txHash: String!
+  logIndex: Int!
+}
+
+"GaplessCreSink CreReport log (kinds 1 ref, 2 watch, 3 Armed log)."
+type CreReportEntity {
+  id: ID!
+  kind: Int!
+  perpId: Int!
+  refPricePNS: BigInt!
+  armed: Int!
+  triggered: Int!
+  blockNumber: Int! @index
+  timestamp: Int!
+  txHash: String!
+  logIndex: Int!
+}
+
+"Admin, role, pause and config logs from the manager and the vault."
+type AdminEvent {
+  id: ID!
+  contract: String!
+  kind: String! @index
+  perpId: Int
+  account: String
+  role: String
+  blockNumber: Int! @index
+  timestamp: Int!
+  txHash: String!
+  logIndex: Int!
+  params: Json!
+}
+
+"Singleton (id \"global\"). Same definitions as GET /api/stats so the reconcile script can compare."
+type Stats {
+  id: ID!
+  coversTotal: Int!
+  coversLive: Int!
+  coversArmed: Int!
+  coversTriggered: Int!
+  coversFinalized: Int!
+  coversCancelled: Int!
+  coversExpired: Int!
+  coversVoided: Int!
+  "Accounts with at least one cover (one account per owner)."
+  owners: Int!
+  accounts: Int!
+  notionalCoveredCNS: BigInt!
+  rentCNS: BigInt!
+  "Finalized escrowToVault plus EscrowForfeited."
+  escrowToVaultCNS: BigInt!
+  premiumReceivedCNS: BigInt!
+  premiumToLpsCNS: BigInt!
+  premiumToTreasuryCNS: BigInt!
+  "Vault Paid logs."
+  payoutCount: Int!
+  paidCNS: BigInt!
+  "Vault owedTotal."
+  owedCNS: BigInt!
+  armCount: Int!
+  fillCount: Int!
+  triggerNoFillCount: Int!
+  armToTriggerCount: Int!
+  armToTriggerSum: Int!
+  armToTriggerMax: Int!
+  "Counts per bucket with upper edges 1, 2, 3, 4, 6, 10, 20, 40, 100, 200 blocks, last bucket above 200."
+  armToTriggerHist: [Int!]!
+  lpCount: Int!
+  vaultGrossAssetsCNS: BigInt!
+  vaultTotalAssetsCNS: BigInt!
+  vaultReservedTotalCNS: BigInt!
+  vaultUtilizationBps: Int!
+  creReports: Int!
+  creArmed: Int!
+  creTriggered: Int!
+  trades: Int!
+  vaultDeployTx: String
+  firstCoverTx: String
+  firstTriggerTx: String
+  updatedBlock: Int!
+}
