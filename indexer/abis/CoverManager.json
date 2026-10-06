@@ -1,0 +1,1006 @@
+[
+  {
+    "type": "event",
+    "name": "Armed",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "armer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "bookPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "refPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CoverBought",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "isLong",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "lots",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "stopPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "maxGapBps",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "escrowCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "rentCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "capCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "expiryBlock",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CoverEnded",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum CoverStatus"
+      },
+      {
+        "name": "reason",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum EndReason"
+      },
+      {
+        "name": "refundCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CoverResized",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "newLots",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "releasedCapCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "refundCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DefaultAdminDelayChangeCanceled",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DefaultAdminDelayChangeScheduled",
+    "inputs": [
+      {
+        "name": "newDelay",
+        "type": "uint48",
+        "indexed": false,
+        "internalType": "uint48"
+      },
+      {
+        "name": "effectSchedule",
+        "type": "uint48",
+        "indexed": false,
+        "internalType": "uint48"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DefaultAdminTransferCanceled",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DefaultAdminTransferScheduled",
+    "inputs": [
+      {
+        "name": "newAdmin",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "acceptSchedule",
+        "type": "uint48",
+        "indexed": false,
+        "internalType": "uint48"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Disarmed",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "reason",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum DisarmReason"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "EscrowForfeited",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "amountCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FactorySet",
+    "inputs": [
+      {
+        "name": "factory",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Finalized",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "topUpCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "totalPaidCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "refFinalPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "escrowToVaultCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MarketListed",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "cfg",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct MarketConfig",
+        "components": [
+          {
+            "name": "listed",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "priceDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "lotDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "scale",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "feed",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "feedDecimals",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "creRefStore",
+            "type": "address",
+            "internalType": "address"
+          }
+        ]
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MarketParamsSet",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "oldP",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct MarketParams",
+        "components": [
+          {
+            "name": "slipAllowanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxGapBpsCap",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "floorSlackBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "refTolBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "minStopDistanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "kDistE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "loadBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "rentAprBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "uKinkBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope1Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope2Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "marketCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "perBlockPayoutCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxLossToDepositBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "impactBpsPerKE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxMatchesClose",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "warmupBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "armTtlBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "exclusiveBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "windowBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "maxDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "sigmaMaxAgeBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "refFreshSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "feedMaxAgeSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minFeeCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "maxCoverNotionalCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "zEdgesE2",
+            "type": "uint16[8]",
+            "internalType": "uint16[8]"
+          },
+          {
+            "name": "gapBpsE2",
+            "type": "uint16[9]",
+            "internalType": "uint16[9]"
+          }
+        ]
+      },
+      {
+        "name": "newP",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct MarketParams",
+        "components": [
+          {
+            "name": "slipAllowanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxGapBpsCap",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "floorSlackBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "refTolBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "minStopDistanceBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "kDistE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "loadBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "rentAprBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "uKinkBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope1Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "slope2Bps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "marketCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "perBlockPayoutCapBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxLossToDepositBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "impactBpsPerKE2",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxMatchesClose",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "warmupBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "armTtlBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "exclusiveBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "windowBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "maxDurationBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "sigmaMaxAgeBlocks",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "refFreshSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "feedMaxAgeSec",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "minFeeCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "maxCoverNotionalCNS",
+            "type": "uint80",
+            "internalType": "uint80"
+          },
+          {
+            "name": "zEdgesE2",
+            "type": "uint16[8]",
+            "internalType": "uint16[8]"
+          },
+          {
+            "name": "gapBpsE2",
+            "type": "uint16[9]",
+            "internalType": "uint16[9]"
+          }
+        ]
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MarketPauseSet",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "paused",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Observed",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "refPostPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PayoutDeferred",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "owedCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RefundClaimed",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amountCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RefundOwed",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amountCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleAdminChanged",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "previousAdminRole",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "newAdminRole",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleGranted",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleRevoked",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SigmaPosted",
+    "inputs": [
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "sigmaBlkBpsE2",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TriggerNoFill",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "limitPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Triggered",
+    "inputs": [
+      {
+        "name": "coverId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "perpId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "filledLots",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "realizedCNS",
+        "type": "int256",
+        "indexed": false,
+        "internalType": "int256"
+      },
+      {
+        "name": "gRealCumCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "refTrigPNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "paidNowCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "owedCNS",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Paused",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Unpaused",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  }
+]
