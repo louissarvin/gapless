@@ -1,0 +1,6 @@
+node_modules/
+dist/
+oclif.manifest.json
+*.tgz
+# Copied from ../skills/gapless/SKILL.md at prepack
+/SKILL.md

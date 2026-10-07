@@ -1,0 +1,108 @@
+{
+  "name": "mm-plugin-gapless",
+  "version": "0.1.0",
+  "description": "Guaranteed stop-losses on Perpl (Monad) for MetaMask Agent Wallet",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "oclif-plugin",
+    "metamask",
+    "agent-wallet",
+    "monad",
+    "perpl",
+    "stop-loss"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "files": [
+    "dist",
+    "oclif.manifest.json",
+    "SKILL.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && oclif manifest",
+    "prepack": "npm run build && node scripts/copy-skill.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist oclif.manifest.json SKILL.md"
+  },
+  "oclif": {
+    "bin": "mm",
+    "commands": "./dist/commands",
+    "topicSeparator": " ",
+    "topics": {
+      "gapless": {
+        "description": "Guaranteed stops on Perpl perps (Monad 143)"
+      }
+    }
+  },
+  "mm": {
+    "schemaVersion": 1,
+    "minCliVersion": "^6.2.0",
+    "capabilities": [],
+    "commands": [
+      {
+        "id": "gapless:quote",
+        "capabilities": ["wallet-read"],
+        "dataAccess": ["accounts"],
+        "targetChains": [143]
+      },
+      {
+        "id": "gapless:trade",
+        "capabilities": ["wallet-read", "wallet-submit"],
+        "dataAccess": ["accounts", "balances"],
+        "targetChains": [143]
+      },
+      {
+        "id": "gapless:cover",
+        "capabilities": ["wallet-read", "wallet-submit"],
+        "dataAccess": ["accounts", "balances"],
+        "targetChains": [143]
+      },
+      {
+        "id": "gapless:cancel",
+        "capabilities": ["wallet-read", "wallet-submit"],
+        "dataAccess": ["accounts"],
+        "targetChains": [143]
+      },
+      {
+        "id": "gapless:status",
+        "capabilities": ["wallet-read"],
+        "dataAccess": ["accounts"],
+        "targetChains": [143]
+      },
+      {
+        "id": "gapless:grant",
+        "capabilities": ["wallet-read"],
+        "dataAccess": ["accounts"],
+        "targetChains": [143]
+      },
+      {
+        "id": "gapless:link",
+        "capabilities": ["wallet-read", "wallet-submit"],
+        "dataAccess": ["accounts"],
+        "targetChains": [143]
+      },
+      {
+        "id": "gapless:account",
+        "capabilities": ["wallet-read", "wallet-submit"],
+        "dataAccess": ["accounts", "balances"],
+        "targetChains": [143]
+      }
+    ]
+  },
+  "dependencies": {
+    "viem": "2.57.3"
+  },
+  "peerDependencies": {
+    "@metamask/agent-wallet": "^6.2.0"
+  },
+  "devDependencies": {
+    "@metamask/agent-wallet": "7.0.0",
+    "@types/node": "24.19.1",
+    "oclif": "4.24.0",
+    "typescript": "5.9.3",
+    "vitest": "5.0.3"
+  }
+}
