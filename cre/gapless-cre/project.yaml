@@ -1,0 +1,10 @@
+# CRE project settings (cre-cli project.yaml template, v1.37.0).
+# MONAD_RPC_URL comes from the shell or an untracked .env; never commit an RPC key here.
+staging-settings:
+  rpcs:
+    - chain-name: monad-mainnet
+      url: ${MONAD_RPC_URL}
+production-settings:
+  rpcs:
+    - chain-name: monad-mainnet
+      url: ${MONAD_RPC_URL}
