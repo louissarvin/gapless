@@ -1,0 +1,48 @@
+{
+  "schedule": "*/30 * * * * *",
+  "chainSelectorName": "monad-mainnet",
+  "receiver": "0xB9908Df02187c49cc77905e62bCA73AB28d9FD1B",
+  "coverManager": "0xb07C20cb5328d5208A1453521b94beeB3Faa1771",
+  "logConfidence": "CONFIDENCE_LEVEL_SAFE",
+  "maxIdsPerReport": 1,
+  "gasRef": "300000",
+  "gasBase": "150000",
+  "gasPerArm": "300000",
+  "gasPerTrigger": "2400000",
+  "gasCap": "9500000",
+  "maxSourceDevBps": 50,
+  "minSources": 2,
+  "httpTimeout": "5s",
+  "markets": [
+    {
+      "perpId": 1,
+      "priceDecimals": 1,
+      "sources": [
+        {
+          "name": "binance",
+          "url": "https://data-api.binance.vision/api/v3/ticker/price?symbol=BTCUSDT",
+          "path": [
+            "price"
+          ]
+        },
+        {
+          "name": "coinbase",
+          "url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+          "path": [
+            "price"
+          ]
+        },
+        {
+          "name": "kraken",
+          "url": "https://api.kraken.com/0/public/Ticker?pair=XBTUSD",
+          "path": [
+            "result",
+            "XXBTZUSD",
+            "c",
+            "0"
+          ]
+        }
+      ]
+    }
+  ]
+}
