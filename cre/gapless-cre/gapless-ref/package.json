@@ -1,0 +1,30 @@
+{
+  "name": "gapless-ref",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.js",
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.2.21"
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "bun test",
+    "compile": "cre-compile main.ts dist/gapless-ref.wasm",
+    "vectors": "bun scripts/gen-vectors.ts",
+    "sim:ref": "bun scripts/simulate.ts ref",
+    "sim:watch": "bun scripts/simulate.ts watch",
+    "sim:armed": "bun scripts/simulate.ts armed",
+    "broadcast:ref": "bun scripts/simulate.ts ref broadcast"
+  },
+  "dependencies": {
+    "@chainlink/cre-sdk": "1.23.0",
+    "viem": "2.57.3",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.1",
+    "typescript": "5.9.3"
+  }
+}
