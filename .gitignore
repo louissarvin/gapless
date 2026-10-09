@@ -26,6 +26,7 @@ CLAUDE.md
 /MAXIMIZATION_STATUS.md
 /PITCH_DECK.md
 /SUBMISSION_COPY.md
+/RESEARCH_INDEX.md
 
 deployments/*.tmp
 .cre_build_tmp.js
