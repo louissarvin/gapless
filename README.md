@@ -143,9 +143,9 @@ bun run sim:watch        # dry-run the watchlist handler
 
 ```bash
 cd indexer
-bun install
-bun run codegen
-envio dev                # local Docker-based Postgres + Hasura, indexes real mainnet events
+pnpm install
+pnpm codegen
+pnpm dev                 # local Docker-based Postgres + Hasura, indexes real mainnet events
 ```
 
 **MetaMask Agent Wallet plugin**
@@ -212,7 +212,7 @@ Deliberately honest, same standard applied throughout the build: nothing below i
 | Full PWA (9 pages: onboarding, trade, vault, Gap Index, stats, proof, agent settings) | **Built**, wired to real backend/contract data |
 | Real passkey onboarding ceremony + relay integration | **Verified working** in testing — no account yet created on a public production deployment |
 | Money-moving transaction safety (confirmation sheets, duplicate-send guards) | **Security-reviewed**, no open Critical/High findings |
-| Chainlink CRE workflow | Built, structure matches `cre init`'s real scaffold; **2 of 3 handlers dry-run successfully against live mainnet data** (see `contract/audit/CRE_SIMULATION_2026-10-09.md`); third handler needs a real Armed event, which doesn't exist yet |
+| Chainlink CRE workflow | Built, structure matches `cre init`'s real scaffold; **2 of 3 handlers dry-run successfully against live mainnet data** (see [`audit/CRE_SIMULATION_2026-10-09.md`](audit/CRE_SIMULATION_2026-10-09.md)); third handler needs a real Armed event, which doesn't exist yet |
 | Envio indexer | Built, 17 tests pass; **confirmed connects to live HyperSync and reaches the real chain head** locally; full historical backfill not confirmed complete in the time observed |
 | MetaMask Agent Wallet plugin | Built, 67 tests pass, clean build — **not yet published to npm**, full CLI run needs a phone-based MetaMask 2FA step |
 | A real cover bought, armed, and triggered on mainnet | **Not yet** — needs the keeper running and a funded account |
