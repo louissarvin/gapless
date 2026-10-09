@@ -1,0 +1,10 @@
+# Actions only: package pins are deliberate (Envio Cloud ignores the lockfile, Bun matches the image).
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]
