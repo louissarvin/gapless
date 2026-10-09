@@ -38,7 +38,7 @@ Centralized brokers solved this decades ago with a paid "guaranteed stop" produc
 
 The payout is bounded three ways so it can't be gamed: the real measured gap, an independent Chainlink-oracle-checked reference, and a cap the trader chose (which also sets their premium). See [`MECHANISM.md`](MECHANISM.md) for the exact formulas, pulled straight from the deployed contract.
 
-LPs underwrite the risk and earn the premiums — 10% to protocol treasury, 90% compounds into LP share value, live on the deployed `CoverVault` today, not a projection.
+LPs underwrite the risk and earn the premiums — 10% to protocol treasury, 90% compounds into LP share value. That split is a live, deployed contract parameter (`protocolFeeBps = 1000` on `CoverManager` today, checkable with `cast call`), not a design doc; no real premium has been paid yet since no cover has been bought on mainnet, and buys are currently paused while the demo account is funded.
 
 ---
 
@@ -207,15 +207,15 @@ Deliberately honest, same standard applied throughout the build: nothing below i
 | Area | Status |
 |---|---|
 | Contracts deployed, verified, 508 tests (unit, fuzz, 15 invariants) | **Live** |
-| Relay + jobs running | **Live** |
+| Relay + jobs running | **Live locally** (Docker on the dev machine) — not yet exposed on a public URL |
 | Keeper (arm/trigger/observe/finalize automation) | Built, tested against a fork rehearsal — **not currently running** |
 | Full PWA (9 pages: onboarding, trade, vault, Gap Index, stats, proof, agent settings) | **Built**, wired to real backend/contract data |
-| Real passkey onboarding ceremony + relay integration | **Verified working** in testing — no account yet created on a public production deployment |
+| Real passkey onboarding ceremony + fresh-device reconstruction | **Verified**: clear-storage then re-auth reproduces the identical owner address from the same passkey, confirmed byte-for-byte ([`audit/MERA_FRESH_DEVICE_2026-10-09.md`](audit/MERA_FRESH_DEVICE_2026-10-09.md)) — no account yet created on a public production deployment |
 | Money-moving transaction safety (confirmation sheets, duplicate-send guards) | **Security-reviewed**, no open Critical/High findings |
 | Chainlink CRE workflow | Built, structure matches `cre init`'s real scaffold; **2 of 3 handlers dry-run successfully against live mainnet data** (see [`audit/CRE_SIMULATION_2026-10-09.md`](audit/CRE_SIMULATION_2026-10-09.md)); third handler needs a real Armed event, which doesn't exist yet |
-| Envio indexer | Built, 17 tests pass; **confirmed connects to live HyperSync and reaches the real chain head** locally; full historical backfill not confirmed complete in the time observed |
-| MetaMask Agent Wallet plugin | Built, 67 tests pass, clean build — **not yet published to npm**, full CLI run needs a phone-based MetaMask 2FA step |
-| A real cover bought, armed, and triggered on mainnet | **Not yet** — needs the keeper running and a funded account |
+| Envio indexer | Built, 17 tests pass; **full real historical sync confirmed working end to end** (from the actual deploy block to the live chain tip, real decoded on-chain data landed in Postgres, verified via GraphQL) |
+| MetaMask Agent Wallet plugin | Built, 70 tests pass, clean build — **verified live against mainnet** via a real tarball install (reads reach real on-chain state through the host's `walletExecutor`); **not yet published to npm**, a full submit still needs a phone-based MetaMask 2FA step |
+| A real cover bought, armed, and triggered on mainnet | **Not yet** — `CoverManager` buys are currently paused, no account funded yet |
 | Public deployment (live URL) | **Not yet** — domain acquired, not yet pointed live |
 | Git history | **Public** at [github.com/louissarvin/gapless](https://github.com/louissarvin/gapless) |
 
