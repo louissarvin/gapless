@@ -2,6 +2,12 @@
 name: gapless-indexer
 description: Gapless cover protocol on Monad mainnet (CoverManager, CoverVault, GaplessFactory, GaplessAccount clones, CRE sink)
 address_format: lowercase
+# Default 5000 never committed a checkpoint locally: this deployment's historical range (~800K blocks
+# from deploy) has far fewer than 5000 matching events in total, so a batch never filled and progress
+# stayed at -1 forever even though HyperSync fetch was healthy and caught up to the chain tip (root
+# cause found 2026-10-09, see memory/indexer-debug-2026-10-09.md). A smaller target commits far more
+# often and indexes the full real history correctly; Envio Cloud's higher event volume may not need this.
+full_batch_size: 50
 # Every handler records the tx hash (block number, timestamp and hash are default block fields).
 # Config level (not per-handler `fields`) so createTestIndexer simulate items are typed with it too.
 field_selection:
@@ -75,9 +81,15 @@ contracts:
     events:
       - event: CreReport
 chains:
-  # Monad mainnet over HyperSync (no rpc block). Envio Cloud needs no HyperSync token; local runs need ENVIO_API_TOKEN.
+  # Monad mainnet over HyperSync, with a direct-RPC fallback: HyperSync (143.hypersync.xyz) resets
+  # connections intermittently from some networks, which stalls historical sync indefinitely with
+  # zero processing progress even though fetch keeps retrying. `for: fallback` lets HyperIndex fall
+  # back to this RPC when HyperSync itself is unreachable, per Envio's own RPC sync guide.
   - id: 143
     start_block: ${ENVIO_START_BLOCK:-111101834} # @deploy:deployBlock
+    rpc:
+      - url: ${ENVIO_RPC_URL:-https://rpc.monad.xyz}
+        for: fallback
     contracts:
       - name: CoverManager
         address: "${ENVIO_COVER_MANAGER_ADDRESS:-0xb07C20cb5328d5208A1453521b94beeB3Faa1771}" # @deploy:CoverManager

@@ -1,4 +1,4 @@
-import type { Enum, EvmOnEventContext, Stats } from "envio";
+import type { Enum, EvmOnEventContext, JSON as EnvioJSON, Stats } from "envio";
 
 export type Ctx = EvmOnEventContext;
 export type CoverStatus = Enum<"CoverStatus">;
@@ -34,13 +34,15 @@ export function toInt(v: bigint, field: string): number {
 }
 
 /** Decoded event params as JSON-safe values (bigint to decimal string). */
-export function jsonParams(v: unknown): unknown {
+/** Event params can hold bigints and nested structs, neither of which are valid JSON on their own. */
+export function jsonParams(v: unknown): EnvioJSON {
   if (typeof v === "bigint") return v.toString();
   if (Array.isArray(v)) return v.map(jsonParams);
   if (v !== null && typeof v === "object") {
     return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, jsonParams(x)]));
   }
-  return v;
+  if (typeof v === "string" || typeof v === "number" || typeof v === "boolean" || v === null) return v;
+  return String(v);
 }
 
 export const ceilDiv = (a: bigint, b: bigint): bigint => (a + b - 1n) / b;

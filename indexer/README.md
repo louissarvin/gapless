@@ -40,7 +40,16 @@ Notes on meaning:
 | `ENVIO_MONAD_RPC_URL` | effects | `https://rpc-mainnet.monadinfra.com` (historical state, D1). Unset means effects return null. https only (http allowed for localhost). Never logged |
 | `ENVIO_SAMPLER_PERPS` | sampler | Comma-separated perp ids, default `1` |
 | `ENVIO_PERPL_EXCHANGE_ADDRESS` | effects | Optional, default `Constants.PERPL_EXCHANGE` (`0x34B6...2a6F`) |
-| `ENVIO_API_TOKEN` | local `envio dev` only | HyperSync token. Envio Cloud does not need one. Keep it in your shell, never in a committed file |
+| `ENVIO_API_TOKEN` | local `envio dev` only | HyperSync token. Envio Cloud does not need one. Put it in `indexer/.env` (gitignored, auto-loaded by `envio dev`'s bundled dotenv) or export it in the shell |
+| `ENVIO_RPC_URL` | config | Fallback RPC (`for: fallback`) used when HyperSync itself is unreachable/resets. Default `https://rpc.monad.xyz` |
+
+### Local `envio dev` historical catch-up
+
+`full_batch_size: 50` in `config.yaml` is required locally: the default 5000-event batch target never
+fills over this deployment's sparse historical range, so the indexer fetches all the way to the chain
+tip but never commits a single checkpoint (`latest_processed_block` stays `-1` forever, `envio_dev
+-r` does not help). With a smaller target it catches up to the real chain tip and indexes the full
+history correctly. See `memory/indexer-debug-2026-10-09.md` for the full root-cause trail.
 
 ### Deploy markers (contract with W5)
 
@@ -56,7 +65,7 @@ pnpm tsc
 pnpm test               # offline, simulate mode
 ```
 
-`pnpm dev` (`envio dev`) runs the full indexer with Postgres and Hasura in Docker and needs Docker running plus `ENVIO_API_TOKEN` exported in the shell. Hasura admin secret locally is `testing`. Config, schema or ABI changes need `pnpm envio start -r`.
+`pnpm dev` (`envio dev`) runs the full indexer with Postgres and Hasura in Docker and needs Docker running plus `ENVIO_API_TOKEN` in `indexer/.env` or the shell env. Hasura admin secret locally is `testing`. Config, schema or ABI changes need `pnpm envio start -r`.
 
 ## Tests
 
