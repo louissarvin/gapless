@@ -23,7 +23,7 @@ describe("package manifest", () => {
   it("passes the host's own PluginManifestSchema", () => {
     expect(PluginManifestSchema.safeParse(pkg.mm).success).toBe(true);
     expect(pkg.mm.schemaVersion).toBe(1);
-    expect(pkg.mm.minCliVersion).toBe("^6.2.0");
+    expect(pkg.mm.minCliVersion).toBe("^7.0.0");
   });
 
   it("keeps plugin-wide capabilities empty and per-command capabilities minimal", () => {
@@ -44,7 +44,7 @@ describe("package manifest", () => {
 
   it("meets the install requirements: keyword, peer dep, oclif block, no hooks", () => {
     expect(pkg.keywords).toContain("oclif-plugin");
-    expect(pkg.peerDependencies["@metamask/agent-wallet"]).toBe("^6.2.0");
+    expect(pkg.peerDependencies["@metamask/agent-wallet"]).toBe("^7.0.0");
     expect(pkg.dependencies["@metamask/agent-wallet"]).toBeUndefined();
     expect(pkg.dependencies.viem).toBe("2.57.3");
     expect(pkg.oclif.commands).toBe("./dist/commands");
