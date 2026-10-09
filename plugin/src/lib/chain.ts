@@ -4,6 +4,7 @@ import { ICoverManagerAbi, IGaplessAccountAbi, IGaplessFactoryAbi, IPerplMinAbi 
 import { CHAIN_ID, resolveDeployment } from "./config.js";
 import { fail, toCommandError } from "./errors.js";
 import type { Host } from "./host.js";
+import { fallbackClient as defaultFallbackClient } from "./rpc.js";
 import { parseAddress, parseInteger } from "./units.js";
 
 export type Gapless = {
@@ -23,11 +24,27 @@ export async function read<T>(action: string, fn: () => Promise<T>): Promise<T> 
   }
 }
 
-/** Chain 143 check plus the wiring read back from the manager; the packaged factory must match it. */
-export async function connect(host: Host): Promise<Gapless> {
+/**
+ * Chain 143 check plus the wiring read back from the manager; the packaged factory must match it.
+ * If the host's own RPC gateway is unreachable for this chain, falls back to a direct read-only
+ * client for the rest of the session. Signing and broadcasting never touch this fallback: they stay
+ * exclusively on `host.walletExecutor` (see submitTx), so this cannot be used to bypass policy or 2FA.
+ */
+export async function connect(host: Host, fallback: () => PublicClient = defaultFallbackClient): Promise<Gapless> {
   const dep = resolveDeployment();
-  const client = host.publicClient(CHAIN_ID);
-  const chainId = await read("eth_chainId", () => client.getChainId());
+  let client = host.publicClient(CHAIN_ID);
+  let chainId: number;
+  try {
+    chainId = await client.getChainId();
+  } catch (hostErr) {
+    client = fallback();
+    try {
+      chainId = await client.getChainId();
+    } catch (fallbackErr) {
+      throw toCommandError(fallbackErr, "eth_chainId");
+    }
+    void hostErr; // the host's own failure is only useful for debugging; never surfaced (could carry its gateway URL)
+  }
   if (chainId !== CHAIN_ID) {
     fail("GAPLESS_WRONG_CHAIN", `RPC reports chain ${chainId}, Gapless runs on Monad ${CHAIN_ID} only.`, "Run mm chains list and retry.");
   }

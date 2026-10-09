@@ -2,7 +2,7 @@
 
 Guaranteed stop-losses on [Perpl](https://perpl.xyz) perps (Monad, chain 143) for [MetaMask Agent Wallet](https://docs.metamask.io/agent-wallet/). If the price gaps through your stop, Gapless closes the position and pays the gap between the stop and the actual close, up to a cap.
 
-Every transaction goes through Agent Wallet's `walletExecutor`, so signing, Guard Mode policy, threat scanning and 2FA always apply. The plugin holds no keys, sends no raw transactions and talks to nothing except the host's authenticated RPC client (plus an optional Envio GraphQL URL you pass yourself).
+Every transaction goes through Agent Wallet's `walletExecutor`, so signing, Guard Mode policy, threat scanning and 2FA always apply. The plugin holds no keys and sends no raw transactions: signing and broadcasting always go exclusively through the host's `walletExecutor`, with no code path around it. Reads (quotes, status, simulation, receipt polling) use the host's authenticated RPC client by default; if that gateway is unreachable for this chain, they fall back to a direct public RPC (`GAPLESS_FALLBACK_RPC_URL`, default `https://rpc.monad.xyz`) for the rest of the session. This fallback never touches signing or broadcast (plus an optional Envio GraphQL URL you pass yourself for `status --graphql`).
 
 The agent normally acts as the **operator** of a GaplessAccount: the owner signs an onchain grant (per-trade cap, rolling daily budget, expiry, never withdraw) that sits under Guard Mode as a second policy layer.
 
@@ -61,6 +61,7 @@ Day-1 smoke read (no signing): `mm gapless grant --account <clone> --json`, then
 | `GAPLESS_FACTORY_ADDRESS` | Optional cross-check; otherwise read from `CoverManager.factory()` |
 | `GAPLESS_ACCOUNT` | Default for `--account` |
 | `GAPLESS_GRAPHQL_URL` | Default for `status --graphql` (https only) |
+| `GAPLESS_FALLBACK_RPC_URL` | Read-only fallback when the host's own RPC gateway is unreachable for chain 143. Default `https://rpc.monad.xyz`. Never used for signing or broadcast |
 
 `src/abi/*` and `src/addresses.ts` are generated. They were bootstrapped by hand once on 2026-10-06; from W5 on `scripts/sync-abi.ts` owns them and CI checks for drift. Do not edit them.
 
