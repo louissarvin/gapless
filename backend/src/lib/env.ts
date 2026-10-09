@@ -158,6 +158,8 @@ export const relayEnvSchema = z.object({
   GAP_INDEX_DIR: z.string().min(1).default('data/gap-index'),
   // Jobs event store, opened read-only for /api/wallet/:addr.
   JOBS_DB_PATH: z.string().min(1).default('data/jobs.sqlite'),
+  // Envio HyperIndex GraphQL (public role, no admin secret) for /api/indexer/*. Unset answers 503.
+  ENVIO_GRAPHQL_URL: httpsUrl.optional(),
   // Keeper WS access outside the public caps, the detailed /healthz body and /sigma-refresh forwarding.
   RELAY_INTERNAL_TOKEN: internalToken.optional(),
   // Feature flag for /sponsor/create and /activate (the only routes that spend the relay key).

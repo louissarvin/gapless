@@ -144,6 +144,19 @@ describe('relay env', () => {
     expect(loadRelayEnv({ APP_ORIGIN: 'https://app.gapless.test' })).not.toHaveProperty('ENVIO_API_TOKEN');
   });
 
+  test('ENVIO_GRAPHQL_URL: optional, https or plain http for localhost only', () => {
+    expect(loadRelayEnv({ APP_ORIGIN: 'https://app.gapless.test' }).ENVIO_GRAPHQL_URL).toBeUndefined();
+    expect(loadRelayEnv({ APP_ORIGIN: 'https://app.gapless.test', ENVIO_GRAPHQL_URL: ' ' }).ENVIO_GRAPHQL_URL).toBeUndefined();
+    for (const good of ['https://indexer.example/abc/v1/graphql', 'http://localhost:8080/v1/graphql', 'http://127.0.0.1:8080/v1/graphql']) {
+      expect(loadRelayEnv({ APP_ORIGIN: 'https://app.gapless.test', ENVIO_GRAPHQL_URL: good }).ENVIO_GRAPHQL_URL).toBe(good);
+    }
+    for (const bad of ['http://indexer.example/v1/graphql', 'http://indexer.internal:8080/v1/graphql', 'ws://localhost:8080/v1/graphql', 'not a url']) {
+      const p = problems(() => loadRelayEnv({ APP_ORIGIN: 'https://app.gapless.test', ENVIO_GRAPHQL_URL: bad }));
+      expect(p).toEqual([expect.stringMatching(/^ENVIO_GRAPHQL_URL: /)]);
+      expect(p.join()).not.toContain('indexer');
+    }
+  });
+
   test.each([
     ['PERPL_MARKET_IDS', '1,1'],
     ['PERPL_MARKET_IDS', '0'],

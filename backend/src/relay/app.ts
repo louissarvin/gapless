@@ -14,6 +14,7 @@ import { registerHealthz, type MarketDataHealth } from './healthz.ts';
 import { PerplRestClient } from './perpl/rest.ts';
 import type { MarketStore } from './perpl/store.ts';
 import { gapIndexRoutes } from './routes/gapIndex.ts';
+import { indexerRoutes } from './routes/indexer.ts';
 import { keeperConsoleRoutes } from './routes/keeperConsole.ts';
 import { perplRoutes } from './routes/perpl.ts';
 import { sigmaRefreshRoutes } from './routes/sigmaRefresh.ts';
@@ -44,6 +45,8 @@ export interface RelayDeps {
   sponsor?: SponsorService | null | (() => SponsorService | null);
   /** Keeper forwarding for /sigma-refresh and /api/keeper/console (tests inject a fake). */
   fetchKeeper?: typeof fetch;
+  /** HyperIndex GraphQL calls for /api/indexer/* (tests inject a fake). */
+  fetchIndexer?: typeof fetch;
   now?: () => number;
 }
 
@@ -128,6 +131,7 @@ export async function buildRelayApp(deps: RelayDeps): Promise<FastifyInstance> {
   });
   const resolveAccountId = deps.resolveAccountId ?? ((a: Address) => resolvePerplAccountId(deps.client, a));
   await app.register(walletRoutes, { prefix: '/api/wallet', appOrigin: env.APP_ORIGIN, jobsDbPath: env.JOBS_DB_PATH, resolveAccountId, now: deps.now });
+  await app.register(indexerRoutes, { prefix: '/api/indexer', appOrigin: env.APP_ORIGIN, url: env.ENVIO_GRAPHQL_URL, fetch: deps.fetchIndexer, now: deps.now });
   const sponsor = deps.sponsor;
   const service = typeof sponsor === 'function' ? sponsor : () => sponsor ?? null;
   await app.register(sponsorRoutes, { appOrigin: env.APP_ORIGIN, service: env.SPONSOR_ENABLED ? service : () => null });

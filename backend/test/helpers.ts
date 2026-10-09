@@ -23,6 +23,7 @@ export async function buildTestApp(opts: {
   readHead?: () => Promise<ChainHead>;
   resolveAccountId?: (address: Address) => Promise<bigint | null>;
   fetchKeeper?: typeof fetch;
+  fetchIndexer?: typeof fetch;
   now?: () => number;
 } = {}) {
   const db = openDb(':memory:');
@@ -34,6 +35,7 @@ export async function buildTestApp(opts: {
     resolveAccountId: opts.resolveAccountId ?? noChainReads,
     readHead: opts.readHead ?? (async () => ({ number: 1n, timestamp: BigInt(Math.floor(Date.now() / 1000)) })),
     fetchKeeper: opts.fetchKeeper,
+    fetchIndexer: opts.fetchIndexer,
     now: opts.now
   });
   return { app, db };

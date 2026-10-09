@@ -226,7 +226,8 @@ export class PerplRestClient {
   }
 }
 
-async function readCapped(res: Response, maxBytes: number): Promise<string> {
+/** Reads the body as text, aborting once it passes maxBytes (declared or streamed). */
+export async function readCapped(res: Response, maxBytes: number): Promise<string> {
   const declared = Number(res.headers.get('content-length'));
   if (Number.isFinite(declared) && declared > maxBytes) {
     await res.body?.cancel();

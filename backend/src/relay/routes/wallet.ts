@@ -45,7 +45,7 @@ type History = Omit<WalletHistory, 'accountId'> & { accountId: string | null };
 type Result = { address: Address; gapless: GaplessBlock | null } & History;
 
 /** Map with TTL and LRU eviction: a hit refreshes recency, the oldest entry goes first. */
-class TtlLru<V> {
+export class TtlLru<V> {
   private readonly m = new Map<string, { value: V; until: number }>();
   constructor(
     private readonly max: number,
