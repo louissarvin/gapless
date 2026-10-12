@@ -2,6 +2,21 @@
 
 Guaranteed stop-losses on [Perpl](https://perpl.xyz) perps (Monad, chain 143) for [MetaMask Agent Wallet](https://docs.metamask.io/agent-wallet/). If the price gaps through your stop, Gapless closes the position and pays the gap between the stop and the actual close, up to a cap.
 
+## Verified live on mainnet (2026-10-12)
+
+Every command in this plugin has been run for real against Monad mainnet, not just unit-tested:
+
+| Command | Real tx |
+|---|---|
+| `mm gapless account` | created the GaplessAccount clone with an AUSD deposit |
+| `mm gapless trade` | opened a BTC long with a guaranteed stop in one transaction |
+| `mm gapless cancel` | cancelled that cover, escrow refunded |
+| `mm gapless cover` | bought a fresh stop on the still-open position — [`0x713017…`](https://monadvision.com/tx/0x713017066dfc04e62db4e112ba9e3eb74dd4708a4f32ba3f8cda3554455e7132) |
+
+That last cover was then triggered and finalized automatically by the Gapless keeper — see the root [`README.md`](../README.md#the-full-lifecycle-step-by-step-with-a-real-example) for the full tx-by-tx walkthrough.
+
+**A real upstream bug was hit along the way and is now resolved.** On 2026-10-09, every transaction submission on chain 143 through the Agent Wallet CLI (`@metamask/agent-wallet` 7.0.0/7.1.0) failed with `Gas fee/price estimation failed: "invalid project id" is not valid JSON` — a bug in the CLI's own authenticated gas-estimation call, not in Monad's gas API or this plugin (a plain `curl` to the same endpoint worked fine). Documented in full in [`../audit/METAMASK_GAS_FEE_BUG_REPORT.md`](../audit/METAMASK_GAS_FEE_BUG_REPORT.md) and filed upstream. As of 2026-10-12 the bug is gone and every command above is confirmed working again.
+
 Every transaction goes through Agent Wallet's `walletExecutor`, so signing, Guard Mode policy, threat scanning and 2FA always apply. The plugin holds no keys and sends no raw transactions: signing and broadcasting always go exclusively through the host's `walletExecutor`, with no code path around it. Reads (quotes, status, simulation, receipt polling) use the host's authenticated RPC client by default; if that gateway is unreachable for this chain, they fall back to a direct public RPC (`GAPLESS_FALLBACK_RPC_URL`, default `https://rpc.monad.xyz`) for the rest of the session. This fallback never touches signing or broadcast (plus an optional Envio GraphQL URL you pass yourself for `status --graphql`).
 
 The agent normally acts as the **operator** of a GaplessAccount: the owner signs an onchain grant (per-trade cap, rolling daily budget, expiry, never withdraw) that sits under Guard Mode as a second policy layer.
@@ -129,6 +144,31 @@ The public reference only says the executor accepts `transaction`, `message` and
 - FAILED, BROADCAST_FAILED, DENIED and EXPIRED throw; an interrupted poll rethrows with `pendingJob` attached.
 
 Re-check this against each new `mm` release before bumping `minCliVersion`.
+
+```mermaid
+sequenceDiagram
+    actor Agent as Agent / mm CLI
+    participant Plugin as mm-plugin-gapless
+    participant Executor as walletExecutor (host)
+    participant Chain as Monad 143
+
+    Agent->>Plugin: mm gapless cover --stop ... --json
+    Plugin->>Chain: eth_call simulate (read-only RPC)
+    Chain-->>Plugin: ok, or revert decoded to GAPLESS_<ERROR>
+    Plugin->>Executor: {kind: "transaction", intent: {summary}}
+    Note over Executor: Guard Mode policy, threat scan,<br/>2FA if the clone is not yet allowlisted
+    Executor->>Chain: signed tx
+    Chain-->>Executor: receipt
+    Executor-->>Plugin: receipt
+    Plugin-->>Agent: decoded CoverBought / CoverEnded / AccountCreated
+```
+
+## Docs
+
+- [MetaMask Agent Wallet overview](https://docs.metamask.io/agent-wallet/) · [Quickstart](https://docs.metamask.io/agent-wallet/quickstart.md) · [Build a plugin](https://docs.metamask.io/agent-wallet/plugins/build-a-plugin.md) · [Install a plugin](https://docs.metamask.io/agent-wallet/plugins/install-a-plugin.md)
+- [Commands reference](https://docs.metamask.io/agent-wallet/reference/commands.md) · [Trading modes](https://docs.metamask.io/agent-wallet/reference/trading-modes.md) · [Outflow policy](https://docs.metamask.io/agent-wallet/reference/outflow-policy.md) · [Supported chains](https://docs.metamask.io/agent-wallet/reference/supported-chains.md) · [Error codes](https://docs.metamask.io/agent-wallet/reference/error-codes.md)
+- [Perpl order types](https://docs.perpl.xyz/exchange/order-types.md) — what `buyCover`/`trade` ultimately close against
+- Root [`../README.md`](../README.md#the-full-lifecycle-step-by-step-with-a-real-example) — the real end-to-end run this plugin produced
 
 ## Development
 

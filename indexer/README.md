@@ -2,6 +2,8 @@
 
 GraphQL over every Gapless event on Monad mainnet (chain 143): cover lifecycle, vault flows, LP positions, GaplessAccount clones, CRE reports, plus a Perpl staleness sampler. Powers `/covers/:id` history, `/vault`, account views and the cross-check of `GET /api/stats`.
 
+**Status (2026-10-12):** a full real cover lifecycle now exists on mainnet for this indexer to pick up (`CoverBought` → `Triggered` → `Finalized`, cover `0x270e5298…`) — see the root [`../README.md`](../README.md#the-full-lifecycle-step-by-step-with-a-real-example) for the tx-by-tx detail. Confirm with the example `CoverHistory` query below once this instance's `envio dev`/Cloud deployment has caught up past block 112,814,546.
+
 Pinned: `envio` 3.12.1, `viem` 2.57.3, `vitest` 4.1.0, `typescript` 6.0.3, pnpm 10.32.0, Node >= 22 (Cloud runs Node 24). Every dependency is an exact pin because Envio Cloud ignores the lockfile.
 
 CLI flags are written `flag:name` in this file (meaning the flag `name` with its usual double-hyphen prefix).
@@ -104,6 +106,30 @@ query CoverHistory($id: String!) {
   }
 }
 ```
+
+## How data gets from the chain to a GraphQL response
+
+```mermaid
+flowchart LR
+    CHAIN["Monad mainnet 143<br/>CoverManager, CoverVault,<br/>GaplessFactory, GaplessAccount clones, GaplessCreSink"]
+    HS["HyperSync"]
+    HANDLERS["src/handlers/<br/>manager · vault · factory · account · sink · sampler"]
+    EFFECTS["src/effects/<br/>perpInfo · blockTime · triggerPrints"]
+    PG["Postgres"]
+    HASURA["Hasura GraphQL"]
+    CLIENT["Relay /api/indexer/*<br/>and any GraphQL client"]
+
+    CHAIN -->|"event logs"| HS -->|"decoded, typed"| HANDLERS
+    HANDLERS -->|"on-demand onchain reads,<br/>5 calls/s, cached"| EFFECTS
+    HANDLERS -->|"entities"| PG --> HASURA --> CLIENT
+```
+
+## Docs
+
+- [HyperIndex overview](https://docs.envio.dev/docs/HyperIndex/overview) · [Event handlers](https://docs.envio.dev/docs/HyperIndex/event-handlers) · [Effect API](https://docs.envio.dev/docs/HyperIndex/effect-api) · [Block handlers](https://docs.envio.dev/docs/HyperIndex/block-handlers) · [Dynamic contracts](https://docs.envio.dev/docs/HyperIndex/dynamic-contracts.md)
+- [Configuration file](https://docs.envio.dev/docs/HyperIndex/configuration-file) · [CLI commands](https://docs.envio.dev/docs/HyperIndex/cli-commands) · [Hosted-service deployment](https://docs.envio.dev/docs/HyperIndex/hosted-service-deployment.md) · [Self-hosting](https://docs.envio.dev/docs/HyperIndex/self-hosting)
+- [HyperSync usage](https://docs.envio.dev/docs/HyperSync/hypersync-usage) · [HyperSync clients](https://docs.envio.dev/docs/HyperSync/hypersync-clients) · [API tokens](https://docs.envio.dev/docs/HyperSync/api-tokens.md)
+- Root [`../README.md`](../README.md#envio--hyperindex--hypersync) — how this fits into the rest of the protocol
 
 ## Dependency advisories
 

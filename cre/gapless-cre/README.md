@@ -2,6 +2,8 @@
 
 One TypeScript workflow, `gapless-ref`, with three handlers on Monad mainnet (chain 143). CRE is the decentralized liveness backstop (arms and fires covers when the keeper is down) and the consensus reference price. Reports go through the MockKeystoneForwarder `0x9eF6468C5f37b976E57d52054c693269479A784d` to `GaplessCreSink`, which only calls the manager's permissionless, state-checked `arm` and `trigger`; `refPricePNS` is display-only.
 
+**Status (2026-10-12):** handlers 0 (`onRefPrice`) and 1 (`onWatch`) dry-run cleanly against live mainnet data — see [`../../audit/CRE_SIMULATION_2026-10-09.md`](../../audit/CRE_SIMULATION_2026-10-09.md). Handler 2 (`onArmed`) still needs a real `Armed` event to replay (`sim:armed <txHash> <logIndex>`): the one real cover triggered on mainnet so far went through the `CoverManager` Live fast path and skipped `arm` entirely, so no `Armed` log exists yet to test against — see the root [`../../README.md`](../../README.md#the-full-lifecycle-step-by-step-with-a-real-example) for that run. The next cover bought with a stop far enough from market to require arming first will produce one.
+
 Notation: CLI flags are written `flag:name`; type them with two leading hyphens (`flag:target` means the long `target` flag). The `bun run sim:*` scripts below build the flags for you.
 
 ## Layout
@@ -125,6 +127,37 @@ Only after the security-auditor signs off the key procedure, in an evening windo
 ## Production deploy (Stretch, not built)
 
 Needs deploy access, a production receiver bound to the KeystoneForwarder `0x76c9cf548b4179F8901cda1f8623568b58215E62` with workflow id and owner checks, and its address in `config.production.json`. Then `cre workflow deploy gapless-ref flag:target production-settings` and `cre workflow activate gapless-ref flag:target production-settings`; pause after judging with `cre workflow pause`.
+
+## How a report reaches the chain
+
+```mermaid
+sequenceDiagram
+    participant DON as Chainlink DON
+    participant Price as price.ts
+    participant Chain as chain.ts
+    participant Forwarder as MockKeystoneForwarder
+    participant Sink as GaplessCreSink
+    participant CM as CoverManager
+
+    loop every DON node, per handler trigger
+        Price->>Price: fetch Binance, Coinbase, Kraken
+        Price->>Price: drop sources >50bps from the median
+        Price-->>DON: node's price (min 2 sources left)
+    end
+    DON->>DON: consensusMedianAggregation across nodes
+    Chain->>Forwarder: signed report
+    Forwarder->>Sink: onReport(decoded fields)
+    Sink->>Sink: check seq window, dedupe by seen[keccak256(report)]
+    Sink->>CM: arm(coverId) / trigger(coverId)
+    Note over CM: permissionless, state-checked —<br/>the sink has no privileged write path
+```
+
+## Docs
+
+- [CRE overview](https://docs.chain.link/cre/overview) · [TypeScript project setup](https://docs.chain.link/cre/getting-started/part-1-project-setup-ts) · [TypeScript/Wasm runtime](https://docs.chain.link/cre/concepts/typescript-wasm-runtime)
+- [Cron trigger](https://docs.chain.link/cre/guides/workflow/using-triggers/cron-trigger-ts) · [EVM log trigger](https://docs.chain.link/cre/guides/workflow/using-triggers/evm-log-trigger-ts) · [Consensus SDK](https://docs.chain.link/cre/reference/sdk/consensus-ts) · [EVM client SDK](https://docs.chain.link/cre/reference/sdk/evm-client-ts)
+- [Simulating workflows](https://docs.chain.link/cre/guides/operations/simulating-workflows) · [Service quotas](https://docs.chain.link/cre/service-quotas) · [Supported networks](https://docs.chain.link/cre/supported-networks-ts)
+- Root [`../../README.md`](../../README.md#chainlink-cre) — how this fits into the rest of the protocol
 
 ## Parity fixture
 
