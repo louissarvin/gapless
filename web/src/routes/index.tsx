@@ -63,7 +63,7 @@ function LandingPage() {
   return (
     <div className="min-h-screen">
       <nav className="fixed inset-x-0 top-[calc(12px+env(safe-area-inset-top))] z-50 mx-auto flex h-14 w-[calc(100%-24px)] max-w-[560px] items-center justify-between rounded-full bg-[var(--color-glass)] px-5 backdrop-blur-xl [box-shadow:inset_0_1px_0_rgba(255,255,255,0.08)]">
-        <span className="type-headline font-display text-[20px]">Gapless</span>
+        <img src="/assets/logo.svg" alt="Gapless" className="h-6 w-auto" />
         <div className="flex items-center gap-2">
           <GaplessButton
             variant="text"
