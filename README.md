@@ -1,6 +1,9 @@
 <div align="center">
 
-<img src="web/public/assets/icons/icon-512.png" alt="Gapless" width="140" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="web/public/assets/logo.svg" />
+  <img src="web/public/assets/logo-on-light.svg" alt="Gapless" width="360" />
+</picture>
 
 # Gapless
 
