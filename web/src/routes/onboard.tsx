@@ -555,7 +555,7 @@ function FundStep({
           type="button"
           aria-label="Copy deposit address"
           className={cnm(
-            'type-mono w-full break-all',
+            'type-mono mb-6 w-full break-all',
             copied ? 'text-[#32D74B]' : 'text-[#AEAEB2]',
           )}
           onClick={handleCopy}
