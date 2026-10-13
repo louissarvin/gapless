@@ -1,8 +1,13 @@
-# One image, three processes. Pick the entrypoint with the container command:
-#   docker run gapless-backend                      -> relay (default)
-#   docker run gapless-backend src/keeper/index.ts  -> keeper (internal /healthz on KEEPER_PORT 3702;
+# One image, four entrypoints. Pick the entrypoint with the container command:
+#   docker run gapless-backend                        -> relay (default)
+#   docker run gapless-backend src/keeper/index.ts    -> keeper (internal /healthz on KEEPER_PORT 3702;
 #     set KEEPER_HOST to the private interface, never publish it)
-#   docker run gapless-backend src/jobs/index.ts    -> jobs
+#   docker run gapless-backend src/jobs/index.ts      -> jobs
+#   docker run gapless-backend scripts/start-relay-jobs.ts -> relay AND jobs in one container
+#     (one process group, one shared /app/data). Use this on a platform that deploys one
+#     container per service and gives each its own isolated volume (no shared volume between
+#     separate services) — e.g. Railway. Either child dying exits the whole container non-zero
+#     so the platform's restart policy restarts both together.
 #
 # Relay and jobs share one read-write volume at /app/data:
 #   jobs writes jobs.sqlite and gap-index/*.json; the relay reads them (jobs.sqlite read-only)
@@ -43,6 +48,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json bun.lock tsconfig.json ./
 COPY src ./src
+COPY scripts ./scripts
 RUN mkdir -p /app/data && chown bun:bun /app/data && chmod 0750 /app/data
 USER bun
 VOLUME ["/app/data"]

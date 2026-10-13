@@ -12,13 +12,19 @@ x-hardening: &hardening
   restart: unless-stopped
 
 services:
-  relay:
+  # relay and jobs run as one container, not two services: they share one read-write volume
+  # (jobs writes gap-index/jobs.sqlite, relay reads them straight off disk), and a platform
+  # that gives each service its own isolated volume (Railway) can't share one between two
+  # separate services. See backend/CLAUDE.md and ../README.md.
+  relay-jobs:
     <<: *hardening
-    command: ["src/relay/index.ts"]
+    command: ["scripts/start-relay-jobs.ts"]
     environment:
       APP_ORIGIN: ${APP_ORIGIN:?set APP_ORIGIN}
       RELAY_INTERNAL_TOKEN: ${RELAY_INTERNAL_TOKEN:?set RELAY_INTERNAL_TOKEN}
       MONAD_HTTP_URLS: ${MONAD_HTTP_URLS:-}
+      MONAD_WS_URL: ${MONAD_WS_URL:-}
+      ENVIO_API_TOKEN: ${ENVIO_API_TOKEN:?set ENVIO_API_TOKEN}
       # The proxy reaches published ports from the bridge gateway; trust that one address only.
       TRUST_PROXY: ${TRUST_PROXY:-}
     ports:
@@ -26,27 +32,16 @@ services:
       - "127.0.0.1:3701:3701"
     volumes:
       - gapless-data:/app/data
-    mem_limit: 512m
-    cpus: "1.0"
+    mem_limit: 1.5g
+    cpus: "2.0"
     healthcheck:
-      # The slim image has no curl; Bun's fetch does the probe.
-      test: ["CMD", "bun", "-e", "fetch('http://127.0.0.1:3700/healthz').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
+      # The slim image has no curl; Bun's fetch does the relay probe. Also checks jobs is still
+      # producing: summary.json under 15 min old.
+      test: ["CMD", "bun", "-e", "Promise.all([fetch('http://127.0.0.1:3700/healthz').then(r=>r.ok),new Promise(res=>{try{res(Date.now()-require('fs').statSync(process.env.OUT_DIR+'/summary.json').mtimeMs<900000)}catch{res(false)}})]).then(([a,b])=>process.exit(a&&b?0:1),()=>process.exit(1))"]
       interval: 30s
-      timeout: 5s
+      timeout: 10s
       retries: 3
-      start_period: 20s
-    stop_grace_period: 15s
-
-  jobs:
-    <<: *hardening
-    command: ["src/jobs/index.ts"]
-    environment:
-      ENVIO_API_TOKEN: ${ENVIO_API_TOKEN:?set ENVIO_API_TOKEN}
-      MONAD_HTTP_URLS: ${MONAD_HTTP_URLS:-}
-    volumes:
-      - gapless-data:/app/data
-    mem_limit: 1g
-    cpus: "1.0"
+      start_period: 30m
     # Jobs waits up to 30 s for a cycle to finish on SIGTERM; Docker's default is 10 s.
     stop_grace_period: 35s
 
