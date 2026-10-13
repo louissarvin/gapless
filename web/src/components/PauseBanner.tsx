@@ -1,11 +1,17 @@
 import { TriangleAlert } from 'lucide-react'
 import { usePauseState } from '@/hooks/usePauseState'
+import { cnm } from '@/utils/style'
+
+interface PauseBannerProps {
+  /** Landing page floats a fixed glass nav pill; clear it when rendering. */
+  landing?: boolean
+}
 
 /**
  * Global pause banner (DESIGN 5.8, ARCHITECTURE __root.tsx row). Not
  * dismissible while the condition holds; one card per active condition.
  */
-export default function PauseBanner() {
+export default function PauseBanner({ landing }: PauseBannerProps) {
   const { data } = usePauseState()
   if (!data) return null
 
@@ -31,7 +37,12 @@ export default function PauseBanner() {
   if (conditions.length === 0) return null
 
   return (
-    <div className="mx-auto max-w-[480px] px-5 pt-4">
+    <div
+      className={cnm(
+        'mx-auto max-w-[480px] px-5 pt-4',
+        landing && 'pt-[calc(12px+env(safe-area-inset-top)+56px+16px)]',
+      )}
+    >
       {conditions.map((condition) => (
         <div
           key={condition.title}

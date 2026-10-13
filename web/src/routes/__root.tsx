@@ -129,15 +129,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="bg-background text-foreground antialiased">
         <QueryClientProvider client={context.queryClient}>
-          <div
-            className={
-              isLanding
-                ? 'pt-[calc(12px+env(safe-area-inset-top)+56px)]'
-                : undefined
-            }
-          >
-            <PauseBanner />
-          </div>
+          <PauseBanner landing={isLanding} />
           <div
             className={
               hideTabBar
