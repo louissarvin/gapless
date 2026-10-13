@@ -32,6 +32,7 @@ import {
   savePendingCreateAccount,
 } from '@/lib/account/pendingCreateAccount'
 import { RelayError, activate, sponsorCreate } from '@/lib/api/relay'
+import { copyToClipboard } from '@/utils/clipboard'
 import { deriveOnboardStep, useAccountState } from '@/hooks/useAccountState'
 import { useAccountSession } from '@/hooks/useAccountSession'
 import { useAuthActions } from '@/hooks/useAuthActions'
@@ -429,23 +430,7 @@ function CopyRow({ label, value }: { label: string; value: string }) {
   const [copied, setCopied] = useState(false)
 
   async function handleCopy() {
-    try {
-      await navigator.clipboard.writeText(value)
-    } catch {
-      // Clipboard API can reject (Incognito, denied permission, no secure
-      // context): fall back to the deprecated but widely-supported execCommand path.
-      const textarea = document.createElement('textarea')
-      textarea.value = value
-      textarea.style.position = 'fixed'
-      textarea.style.opacity = '0'
-      document.body.appendChild(textarea)
-      textarea.select()
-      try {
-        document.execCommand('copy')
-      } finally {
-        document.body.removeChild(textarea)
-      }
-    }
+    await copyToClipboard(value)
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
   }
@@ -520,6 +505,14 @@ function FundStep({
   minCNS: bigint
 }) {
   const remainingCNS = minCNS > balanceCNS ? minCNS - balanceCNS : 0n
+  const [copied, setCopied] = useState(false)
+
+  async function handleCopy() {
+    await copyToClipboard(depositAddress)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
   return (
     <div
       className="card-big flex min-h-[400px] flex-col justify-between p-6 text-center"
@@ -530,7 +523,19 @@ function FundStep({
         <div className="mb-4 flex justify-center">
           <QrCode data={depositAddress} />
         </div>
-        <p className="type-mono break-all text-[#AEAEB2]">{depositAddress}</p>
+        <button
+          type="button"
+          aria-label="Copy deposit address"
+          className="inline-flex items-center gap-2 type-mono break-all text-[#AEAEB2]"
+          onClick={handleCopy}
+        >
+          <span className="break-all">{depositAddress}</span>
+          {copied ? (
+            <Check className="size-4 shrink-0 text-[#32D74B]" strokeWidth={1.75} />
+          ) : (
+            <Copy className="size-4 shrink-0" strokeWidth={1.75} />
+          )}
+        </button>
       </div>
       <div>
         <p className="type-num-lg">{formatCNS(balanceCNS)}</p>
