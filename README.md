@@ -398,7 +398,7 @@ Monad Metropolis Hackathon, Track 01 (Finance & Trading).
 | Community | Ethereum Jakarta |
 | Mainnet deployment | chain 143, see [Deployed contracts](#deployed-contracts-monad-mainnet-chain-143) above |
 | Demo URL | [gapless.site](https://gapless.site) |
-| Demo video | *pending* |
+| Demo video | [youtu.be/HTMTDIC-hVQ](https://youtu.be/HTMTDIC-hVQ) |
 | Pitch video | [youtu.be/h9b-_arxIsw](https://youtu.be/h9b-_arxIsw) |
 
 ### Community — Ethereum Jakarta
