@@ -1,9 +1,9 @@
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import type { Address } from 'viem'
 import { toViemAccount } from '@category-labs/mera/viem'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Check, Copy } from 'lucide-react'
+import type { Address } from 'viem'
 import type { OnboardStep } from '@/hooks/useAccountState'
 import type { DevBypassStage } from '@/dev/devBypass'
 import {
@@ -526,15 +526,13 @@ function FundStep({
         <button
           type="button"
           aria-label="Copy deposit address"
-          className="inline-flex items-center gap-2 type-mono break-all text-[#AEAEB2]"
+          className={cnm(
+            'type-mono w-full break-all',
+            copied ? 'text-[#32D74B]' : 'text-[#AEAEB2]',
+          )}
           onClick={handleCopy}
         >
-          <span className="break-all">{depositAddress}</span>
-          {copied ? (
-            <Check className="size-4 shrink-0 text-[#32D74B]" strokeWidth={1.75} />
-          ) : (
-            <Copy className="size-4 shrink-0" strokeWidth={1.75} />
-          )}
+          {copied ? 'Copied' : depositAddress}
         </button>
       </div>
       <div>
