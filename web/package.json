@@ -31,7 +31,7 @@
     "@tanstack/react-query-devtools": "^5.84.2",
     "@tanstack/react-router": "^1.132.0",
     "@tanstack/react-router-devtools": "^1.132.0",
-    "@tanstack/react-start": "^1.132.0",
+    "@tanstack/react-start": "1.149.1",
     "@tanstack/router-plugin": "^1.132.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.561.0",
