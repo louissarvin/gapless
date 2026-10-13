@@ -179,6 +179,41 @@ describe('status and sync', () => {
     expect(marketWs.getSnapshot(PERP_ID).status).toBe('synced')
   })
 
+  it('returns the same snapshot reference across calls when nothing changed (useSyncExternalStore requires this, or React loops with #185)', () => {
+    marketWs.acquire(PERP_ID)
+    const socket = lastSocket()
+    open(socket)
+    syncMarket(socket)
+    const first = marketWs.getSnapshot(PERP_ID)
+    const second = marketWs.getSnapshot(PERP_ID)
+    expect(second).toBe(first)
+
+    // An unrelated frame for a different, unacquired market must not change this one's reference either.
+    send(socket, {
+      mt: 9,
+      d: { '2': { at: { t: 1 }, mrk: 1, lst: 1, mid: 1, bid: 1, ask: 1 } },
+    })
+    expect(marketWs.getSnapshot(PERP_ID)).toBe(first)
+  })
+
+  it('returns a new snapshot reference once the data actually changes', () => {
+    marketWs.acquire(PERP_ID)
+    const socket = lastSocket()
+    open(socket)
+    syncMarket(socket)
+    const before = marketWs.getSnapshot(PERP_ID)
+
+    send(socket, {
+      mt: 9,
+      d: {
+        '1': { at: { t: 2 }, mrk: 105, lst: 105, mid: 105, bid: 104, ask: 106 },
+      },
+    })
+    const after = marketWs.getSnapshot(PERP_ID)
+    expect(after).not.toBe(before)
+    expect(after.quote?.markScaled).toBe(105)
+  })
+
   it('marks unsynced on a heartbeat sequence gap', () => {
     marketWs.acquire(PERP_ID)
     const socket = lastSocket()

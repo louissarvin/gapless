@@ -141,6 +141,14 @@ function sortedLevels(
     .map(([priceScaled, sizeScaled]) => ({ priceScaled, sizeScaled }))
 }
 
+/** Stable reference for a market with no data yet (`useSyncExternalStore` requires this not to be a fresh object per call). */
+const CONNECTING_SNAPSHOT: MarketSnapshot = {
+  status: 'connecting',
+  quote: null,
+  book: null,
+  updatedAtMs: null,
+}
+
 const RECONNECT_MIN_MS = 1_000
 const RECONNECT_MAX_MS = 30_000
 const RECYCLED_CLOSE_CODE = 1001
@@ -172,6 +180,14 @@ class MarketWsClient {
   private socket: WebSocket | null = null
   private sidMap = new Map<number, { kind: 'book'; marketId: number }>()
   private markets = new Map<number, MarketEntry>()
+  /**
+   * Snapshot cache, refreshed only when the underlying data actually changes
+   * (`refreshSnapshot`/`refreshAllSnapshots`). `useSyncExternalStore` requires
+   * `getSnapshot` to return the same reference when nothing changed; building
+   * a fresh object every call (the previous behavior) reads as "changed" on
+   * every render and trips React's "Maximum update depth exceeded" (#185).
+   */
+  private snapshots = new Map<number, MarketSnapshot>()
   private listeners = new Set<() => void>()
   private refCounts = new Map<number, number>()
   private reconnectAttempt = 0
@@ -202,14 +218,16 @@ class MarketWsClient {
   }
 
   getSnapshot(perpId: number): MarketSnapshot {
+    return this.snapshots.get(perpId) ?? CONNECTING_SNAPSHOT
+  }
+
+  /** Recomputes and caches the snapshot for one market; call after any mutation that could change what `getSnapshot` returns for it. */
+  private refreshSnapshot(perpId: number) {
     const entry = this.markets.get(perpId)
-    if (!entry)
-      return {
-        status: 'connecting',
-        quote: null,
-        book: null,
-        updatedAtMs: null,
-      }
+    if (!entry) {
+      this.snapshots.delete(perpId)
+      return
+    }
     const status: MarketSyncStatus = this.down
       ? 'unsynced'
       : entry.hasBookSnapshot && entry.quote
@@ -221,7 +239,17 @@ class MarketWsClient {
           asks: sortedLevels(entry.book.asks, 'ask', BOOK_LEVELS_TO_KEEP),
         }
       : null
-    return { status, quote: entry.quote, book, updatedAtMs: entry.updatedAtMs }
+    this.snapshots.set(perpId, {
+      status,
+      quote: entry.quote,
+      book,
+      updatedAtMs: entry.updatedAtMs,
+    })
+  }
+
+  /** `down` and a resync both change every market's `status` uniformly. */
+  private refreshAllSnapshots() {
+    for (const perpId of this.markets.keys()) this.refreshSnapshot(perpId)
   }
 
   private totalRefCount(): number {
@@ -313,6 +341,7 @@ class MarketWsClient {
   private markAllUnsynced() {
     this.down = true
     for (const entry of this.markets.values()) entry.hasBookSnapshot = false
+    this.refreshAllSnapshots()
   }
 
   private handleStatus(json: unknown) {
@@ -325,6 +354,7 @@ class MarketWsClient {
       // "up" or "partial": real sync happens once the next mt 6 and its
       // snapshots land (handleSubscription clears hasBookSnapshot again).
       this.down = false
+      this.refreshAllSnapshots()
     }
   }
 
@@ -345,6 +375,7 @@ class MarketWsClient {
         })
     }
     for (const entry of this.markets.values()) entry.hasBookSnapshot = false
+    this.refreshAllSnapshots()
   }
 
   private handleHeartbeat(json: unknown) {
@@ -377,6 +408,7 @@ class MarketWsClient {
         atMs: state.at.t ?? null,
       }
       entry.updatedAtMs = now
+      this.refreshSnapshot(marketId)
     }
   }
 
@@ -398,6 +430,7 @@ class MarketWsClient {
     trimBook(entry.book.asks, 'ask')
     if (isSnapshot) entry.hasBookSnapshot = true
     entry.updatedAtMs = Date.now()
+    this.refreshSnapshot(sidInfo.marketId)
   }
 
   private handleClose = (event: CloseEvent) => {
@@ -507,6 +540,7 @@ class MarketWsClient {
       applyLevels(entry.book.asks, bookParsed.data.data.ask)
       entry.hasBookSnapshot = true
       entry.updatedAtMs = Date.now()
+      this.refreshSnapshot(perpId)
       this.emit()
     } catch {
       // Keep the last known values; the next tick tries again.
@@ -541,6 +575,7 @@ class MarketWsClient {
       this.socket = null
     }
     this.markets.clear()
+    this.snapshots.clear()
     this.sidMap.clear()
   }
 }
