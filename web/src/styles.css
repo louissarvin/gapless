@@ -8,6 +8,19 @@
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/jetbrains-mono';
 
+/* Tailwind Preflight drops the UA default `cursor: pointer` on buttons; put it back so every clickable control reads as clickable. */
+@layer base {
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role='button'][aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}
+
 /*
  * Gapless dark theme (DESIGN.md section 2, 11.2). Overrides HeroUI v3's
  * default dark tokens; unlayered so it always wins over @heroui/styles'
