@@ -23,6 +23,8 @@ Gapless is a guaranteed stop-loss protocol for **Perpl** perpetuals on **Monad**
 ![Envio](https://img.shields.io/badge/Indexer-Envio_HyperIndex-F41EA3)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 
+**[Watch the pitch video](https://youtu.be/h9b-_arxIsw)**
+
 </div>
 
 ---
@@ -395,9 +397,9 @@ Monad Metropolis Hackathon, Track 01 (Finance & Trading).
 | GitHub | [github.com/louissarvin/gapless](https://github.com/louissarvin/gapless) |
 | Community | Ethereum Jakarta |
 | Mainnet deployment | chain 143, see [Deployed contracts](#deployed-contracts-monad-mainnet-chain-143) above |
-| Demo URL | *pending — domain acquired, not yet live* |
+| Demo URL | [gapless.site](https://gapless.site) |
 | Demo video | *pending* |
-| Pitch video | *pending* |
+| Pitch video | [youtu.be/h9b-_arxIsw](https://youtu.be/h9b-_arxIsw) |
 
 ### Community — Ethereum Jakarta
 
