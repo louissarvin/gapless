@@ -9,6 +9,7 @@ import type {
   VaultPublicState,
   VaultRedeemRequest,
 } from '@/hooks/useVaultChainState'
+import type { errorCopyForRevert } from '@/lib/errors'
 import ConfirmSheet, { estimateToNetworkCost } from '@/components/ConfirmSheet'
 import Field from '@/components/Field'
 import GaplessButton from '@/components/GaplessButton'
@@ -33,7 +34,7 @@ import { OrderInputError, parseDecimalToUnits } from '@/lib/trade/order'
 import { getStats } from '@/lib/api/relay'
 import { publicClient } from '@/lib/chain'
 import { ICoverVaultAbi } from '@/abi/ICoverVault'
-import { errorCopyFor, errorCopyForRevert } from '@/lib/errors'
+import { errorCopyFor } from '@/lib/errors'
 import { ADDRESSES } from '@/config/addresses.143'
 import { formatApproxDuration, formatCNS } from '@/utils/units'
 
@@ -1101,8 +1102,15 @@ function ClaimRow({
   )
 }
 
+/**
+ * The stored `actionError` is later looked up by `errorCopyFor` (code -> copy),
+ * so this must return the raw error code, never the human-readable title
+ * (`errorCopyForRevert(decoded).title` was a lookup-key bug: it stored copy
+ * text that matches nothing in `ERROR_COPY`, always falling back to the
+ * generic "Something went wrong" banner).
+ */
 function revertErrorCode(
   decoded: Parameters<typeof errorCopyForRevert>[0],
 ): string {
-  return errorCopyForRevert(decoded).title
+  return decoded?.errorName ?? 'UNKNOWN'
 }

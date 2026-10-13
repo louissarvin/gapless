@@ -50,7 +50,7 @@ import {
 import { ICoverManagerAbi } from '@/abi/ICoverManager'
 import { IGaplessAccountAbi } from '@/abi/IGaplessAccount'
 import { ADDRESSES, LISTED_PERP_ID } from '@/config/addresses.143'
-import { errorCopyFor, errorCopyForRevert } from '@/lib/errors'
+import { errorCopyFor } from '@/lib/errors'
 import { formatCNS, formatSigned, lnsToSize, pnsToPrice } from '@/utils/units'
 import { cnm } from '@/utils/style'
 
@@ -732,8 +732,15 @@ function TradeContent({
   )
 }
 
+/**
+ * The stored `actionError` is later looked up by `errorCopyFor` (code -> copy),
+ * so this must return the raw error code, never the human-readable title
+ * (`errorCopyForRevert(decoded).title` was a lookup-key bug: it stored copy
+ * text that matches nothing in `ERROR_COPY`, always falling back to the
+ * generic "Something went wrong" banner).
+ */
 function revertErrorCode(decoded: DecodedRevert | null): string {
-  return errorCopyForRevert(decoded).title
+  return decoded?.errorName ?? 'UNKNOWN'
 }
 
 /** Builds every `/trade` confirmation sheet (DESIGN 9.1, R.9 item 1) from the
