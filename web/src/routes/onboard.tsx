@@ -2,7 +2,7 @@ import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { toViemAccount } from '@category-labs/mera/viem'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { Copy } from 'lucide-react'
+import { Check, Copy } from 'lucide-react'
 import type { OnboardStep } from '@/hooks/useAccountState'
 import type { DevBypassStage } from '@/dev/devBypass'
 import {
@@ -412,6 +412,30 @@ function ProgressPill({ activeIndex }: { activeIndex: number }) {
 }
 
 function CopyRow({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = useState(false)
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(value)
+    } catch {
+      // Clipboard API can reject (Incognito, denied permission, no secure
+      // context): fall back to the deprecated but widely-supported execCommand path.
+      const textarea = document.createElement('textarea')
+      textarea.value = value
+      textarea.style.position = 'fixed'
+      textarea.style.opacity = '0'
+      document.body.appendChild(textarea)
+      textarea.select()
+      try {
+        document.execCommand('copy')
+      } finally {
+        document.body.removeChild(textarea)
+      }
+    }
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
   return (
     <div className="flex items-center justify-between border-b border-separator py-3 last:border-0">
       <div>
@@ -422,9 +446,13 @@ function CopyRow({ label, value }: { label: string; value: string }) {
         type="button"
         aria-label={`Copy ${label}`}
         className="flex size-11 items-center justify-center rounded-full bg-[#2C2C2E]"
-        onClick={() => navigator.clipboard.writeText(value)}
+        onClick={handleCopy}
       >
-        <Copy className="size-5" strokeWidth={1.75} />
+        {copied ? (
+          <Check className="size-5 text-[#32D74B]" strokeWidth={1.75} />
+        ) : (
+          <Copy className="size-5" strokeWidth={1.75} />
+        )}
       </button>
     </div>
   )
