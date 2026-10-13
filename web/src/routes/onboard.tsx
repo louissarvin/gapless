@@ -288,6 +288,9 @@ function OnboardPage() {
         <div className="mb-6 rounded-md bg-[#2C2C2E] px-4 py-3">
           <p className="type-headline text-[#FF6165]">{errorCopy.title}</p>
           <p className="type-callout text-white">{errorCopy.body}</p>
+          {actionError === 'NOT_FUNDED' && (
+            <DepositAddress address={state.account} />
+          )}
         </div>
       )}
 
@@ -485,9 +488,34 @@ function KeysStep({
  * reaches the relay's `/sponsor/create`, which rejects with `NOT_FUNDED`
  * (ARCHITECTURE: the predicted account must already hold Perpl's own
  * `getMinAccountOpenCNS` minimum before create can succeed); that renders
- * through the normal `errorCopy` banner above, telling the user to fund
- * their deposit address first instead of showing it pre-emptively here.
+ * through the `errorCopy` banner above with the deposit address attached
+ * (`DepositAddress` below) instead of showing it pre-emptively here.
  */
+
+/** Copyable deposit address shown inline on a `NOT_FUNDED` error (above). */
+function DepositAddress({ address }: { address: string }) {
+  const [copied, setCopied] = useState(false)
+
+  async function handleCopy() {
+    await copyToClipboard(address)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
+  return (
+    <button
+      type="button"
+      aria-label="Copy deposit address"
+      className={cnm(
+        'type-mono mt-2 block w-full break-all text-left',
+        copied ? 'text-[#32D74B]' : 'text-[#AEAEB2]',
+      )}
+      onClick={handleCopy}
+    >
+      {copied ? 'Copied' : address}
+    </button>
+  )
+}
 function CreateStep({
   pending,
   onSubmit,
