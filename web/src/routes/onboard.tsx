@@ -12,6 +12,7 @@ import {
   writeDevBypassStage,
 } from '@/dev/devBypass'
 import GaplessButton from '@/components/GaplessButton'
+import QrCode from '@/components/QrCode'
 import {
   EASE_OUT_CUBIC,
   EASE_OUT_EXPO,
@@ -36,7 +37,7 @@ import { deriveOnboardStep, useAccountState } from '@/hooks/useAccountState'
 import { useAccountSession } from '@/hooks/useAccountSession'
 import { useAuthActions } from '@/hooks/useAuthActions'
 import { errorCopyFor } from '@/lib/errors'
-import { shortenAddress } from '@/utils/units'
+import { formatCNS, shortenAddress } from '@/utils/units'
 import { cnm } from '@/utils/style'
 
 export const Route = createFileRoute('/onboard')({ component: OnboardPage })
@@ -54,13 +55,20 @@ const DevBypassPanelLazy = import.meta.env.DEV
 const STEP_ORDER: ReadonlyArray<{ key: OnboardStep | 'done'; label: string }> =
   [
     { key: 'keys', label: 'Keys' },
+    { key: 'fund', label: 'Fund' },
     { key: 'create', label: 'Create' },
     { key: 'activate', label: 'Activate' },
     { key: 'ready', label: 'Ready' },
   ]
 
 function stepIndex(step: OnboardStep): number {
-  const order: Array<OnboardStep> = ['keys', 'create', 'activate', 'ready']
+  const order: Array<OnboardStep> = [
+    'keys',
+    'fund',
+    'create',
+    'activate',
+    'ready',
+  ]
   // operator-replaced and session-expired are end states reached only from "ready"
   if (step === 'operator-replaced' || step === 'session-expired')
     return order.length - 1
@@ -319,6 +327,13 @@ function OnboardPage() {
               onContinue={handleSignCreateAccount}
             />
           )}
+          {step === 'fund' && (
+            <FundStep
+              depositAddress={state.account}
+              balanceCNS={state.ausdBalanceCNS}
+              minCNS={state.minOpenCNS}
+            />
+          )}
           {step === 'create' && (
             <CreateStep pending={pending} onSubmit={handleSubmitCreate} />
           )}
@@ -483,16 +498,7 @@ function KeysStep({
   )
 }
 
-/**
- * "Create" (DESIGN 5.1): no funding gate up front. An underfunded submit
- * reaches the relay's `/sponsor/create`, which rejects with `NOT_FUNDED`
- * (ARCHITECTURE: the predicted account must already hold Perpl's own
- * `getMinAccountOpenCNS` minimum before create can succeed); that renders
- * through the `errorCopy` banner above with the deposit address attached
- * (`DepositAddress` below) instead of showing it pre-emptively here.
- */
-
-/** Copyable deposit address shown inline on a `NOT_FUNDED` error (above). */
+/** Copyable deposit address shown inline on a `NOT_FUNDED` error (above), as a safety net for a balance that drops between Fund and Create. */
 function DepositAddress({ address }: { address: string }) {
   const [copied, setCopied] = useState(false)
 
@@ -516,6 +522,59 @@ function DepositAddress({ address }: { address: string }) {
     </button>
   )
 }
+
+function FundStep({
+  depositAddress,
+  balanceCNS,
+  minCNS,
+}: {
+  depositAddress: string
+  balanceCNS: bigint
+  minCNS: bigint
+}) {
+  const remainingCNS = minCNS > balanceCNS ? minCNS - balanceCNS : 0n
+  const [copied, setCopied] = useState(false)
+
+  async function handleCopy() {
+    await copyToClipboard(depositAddress)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
+  return (
+    <div
+      className="card-big flex min-h-[400px] flex-col justify-between p-6 text-center"
+      style={{ '--card-min-h': '400px' } as React.CSSProperties}
+    >
+      <div>
+        <h2 className="type-title-1 mb-4">Fund your account</h2>
+        <div className="mb-4 flex justify-center">
+          <QrCode data={depositAddress} />
+        </div>
+        <button
+          type="button"
+          aria-label="Copy deposit address"
+          className={cnm(
+            'type-mono w-full break-all',
+            copied ? 'text-[#32D74B]' : 'text-[#AEAEB2]',
+          )}
+          onClick={handleCopy}
+        >
+          {copied ? 'Copied' : depositAddress}
+        </button>
+      </div>
+      <div>
+        <p className="type-num-lg">{formatCNS(balanceCNS)}</p>
+        {remainingCNS > 0n && (
+          <p className="type-footnote text-[#AEAEB2]">
+            {formatCNS(remainingCNS)} more needed
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function CreateStep({
   pending,
   onSubmit,
@@ -531,7 +590,7 @@ function CreateStep({
       <div>
         <h2 className="type-title-1 mb-4">Create your account</h2>
         <p className="type-callout text-[#AEAEB2]">
-          Submit your signed grant to deploy your account.
+          You are funded. Submit your signed grant to deploy your account.
         </p>
       </div>
       <GaplessButton

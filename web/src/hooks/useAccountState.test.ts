@@ -52,8 +52,8 @@ describe('deriveOnboardStep', () => {
     expect(deriveOnboardStep(BASE, false)).toBe('keys')
   })
 
-  it('shows create once signed, even under the minimum balance (funding is folded into create)', () => {
-    expect(deriveOnboardStep(BASE, true)).toBe('create')
+  it('shows fund once signed but under the minimum balance', () => {
+    expect(deriveOnboardStep(BASE, true)).toBe('fund')
   })
 
   it('shows create once funded but not deployed', () => {
