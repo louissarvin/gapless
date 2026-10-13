@@ -12,7 +12,6 @@ import {
   writeDevBypassStage,
 } from '@/dev/devBypass'
 import GaplessButton from '@/components/GaplessButton'
-import QrCode from '@/components/QrCode'
 import {
   EASE_OUT_CUBIC,
   EASE_OUT_EXPO,
@@ -37,7 +36,7 @@ import { deriveOnboardStep, useAccountState } from '@/hooks/useAccountState'
 import { useAccountSession } from '@/hooks/useAccountSession'
 import { useAuthActions } from '@/hooks/useAuthActions'
 import { errorCopyFor } from '@/lib/errors'
-import { formatCNS, shortenAddress } from '@/utils/units'
+import { shortenAddress } from '@/utils/units'
 import { cnm } from '@/utils/style'
 
 export const Route = createFileRoute('/onboard')({ component: OnboardPage })
@@ -318,13 +317,7 @@ function OnboardPage() {
             />
           )}
           {step === 'create' && (
-            <CreateStep
-              depositAddress={state.account}
-              balanceCNS={state.ausdBalanceCNS}
-              minCNS={state.minOpenCNS}
-              pending={pending}
-              onSubmit={handleSubmitCreate}
-            />
+            <CreateStep pending={pending} onSubmit={handleSubmitCreate} />
           )}
           {step === 'activate' && (
             <ActivateStep
@@ -488,68 +481,20 @@ function KeysStep({
 }
 
 /**
- * "Create" (DESIGN 5.1): folds funding into this one step rather than
- * gating it behind a separate pill. Underfunded, it shows the deposit QR and
- * address in place of the submit button; the button appears only once the
- * balance clears Perpl's own minimum (`getMinAccountOpenCNS`, not a Gapless
- * rule — `/activate` enforces the same floor server-side regardless).
+ * "Create" (DESIGN 5.1): no funding gate up front. An underfunded submit
+ * reaches the relay's `/sponsor/create`, which rejects with `NOT_FUNDED`
+ * (ARCHITECTURE: the predicted account must already hold Perpl's own
+ * `getMinAccountOpenCNS` minimum before create can succeed); that renders
+ * through the normal `errorCopy` banner above, telling the user to fund
+ * their deposit address first instead of showing it pre-emptively here.
  */
 function CreateStep({
-  depositAddress,
-  balanceCNS,
-  minCNS,
   pending,
   onSubmit,
 }: {
-  depositAddress: string
-  balanceCNS: bigint
-  minCNS: bigint
   pending: boolean
   onSubmit: () => void
 }) {
-  const remainingCNS = minCNS > balanceCNS ? minCNS - balanceCNS : 0n
-  const isFunded = remainingCNS === 0n
-  const [copied, setCopied] = useState(false)
-
-  async function handleCopy() {
-    await copyToClipboard(depositAddress)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
-  }
-
-  if (!isFunded) {
-    return (
-      <div
-        className="card-big flex min-h-[400px] flex-col justify-between p-6 text-center"
-        style={{ '--card-min-h': '400px' } as React.CSSProperties}
-      >
-        <div>
-          <h2 className="type-title-1 mb-4">Create your account</h2>
-          <div className="mb-4 flex justify-center">
-            <QrCode data={depositAddress} />
-          </div>
-          <button
-            type="button"
-            aria-label="Copy deposit address"
-            className={cnm(
-              'type-mono w-full break-all',
-              copied ? 'text-[#32D74B]' : 'text-[#AEAEB2]',
-            )}
-            onClick={handleCopy}
-          >
-            {copied ? 'Copied' : depositAddress}
-          </button>
-        </div>
-        <div>
-          <p className="type-num-lg">{formatCNS(balanceCNS)}</p>
-          <p className="type-footnote text-[#AEAEB2]">
-            {formatCNS(remainingCNS)} more needed to create your account
-          </p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div
       className="card-big flex min-h-[400px] flex-col justify-between p-6"
@@ -558,7 +503,7 @@ function CreateStep({
       <div>
         <h2 className="type-title-1 mb-4">Create your account</h2>
         <p className="type-callout text-[#AEAEB2]">
-          You are funded. Submit your signed grant to deploy your account.
+          Submit your signed grant to deploy your account.
         </p>
       </div>
       <GaplessButton
