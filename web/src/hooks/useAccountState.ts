@@ -10,7 +10,6 @@ import { publicClient } from '@/lib/chain'
 
 export type OnboardStep =
   | 'keys'
-  | 'fund'
   | 'create'
   | 'activate'
   | 'operator-replaced'
@@ -149,8 +148,10 @@ export function deriveOnboardStep(
   hasPendingPayload: boolean,
 ): OnboardStep {
   if (!state.isDeployed) {
+    // Funding is folded into "create" (DESIGN 5.1): the screen itself shows
+    // the deposit QR until the balance clears Perpl's own minimum, so there
+    // is no separate gate here.
     if (!hasPendingPayload) return 'keys'
-    if (state.ausdBalanceCNS < state.minOpenCNS) return 'fund'
     return 'create'
   }
 

@@ -55,20 +55,13 @@ const DevBypassPanelLazy = import.meta.env.DEV
 const STEP_ORDER: ReadonlyArray<{ key: OnboardStep | 'done'; label: string }> =
   [
     { key: 'keys', label: 'Keys' },
-    { key: 'fund', label: 'Fund' },
     { key: 'create', label: 'Create' },
     { key: 'activate', label: 'Activate' },
     { key: 'ready', label: 'Ready' },
   ]
 
 function stepIndex(step: OnboardStep): number {
-  const order: Array<OnboardStep> = [
-    'keys',
-    'fund',
-    'create',
-    'activate',
-    'ready',
-  ]
+  const order: Array<OnboardStep> = ['keys', 'create', 'activate', 'ready']
   // operator-replaced and session-expired are end states reached only from "ready"
   if (step === 'operator-replaced' || step === 'session-expired')
     return order.length - 1
@@ -324,15 +317,14 @@ function OnboardPage() {
               onContinue={handleSignCreateAccount}
             />
           )}
-          {step === 'fund' && (
-            <FundStep
+          {step === 'create' && (
+            <CreateStep
               depositAddress={state.account}
               balanceCNS={state.ausdBalanceCNS}
               minCNS={state.minOpenCNS}
+              pending={pending}
+              onSubmit={handleSubmitCreate}
             />
-          )}
-          {step === 'create' && (
-            <CreateStep pending={pending} onSubmit={handleSubmitCreate} />
           )}
           {step === 'activate' && (
             <ActivateStep
@@ -495,16 +487,28 @@ function KeysStep({
   )
 }
 
-function FundStep({
+/**
+ * "Create" (DESIGN 5.1): folds funding into this one step rather than
+ * gating it behind a separate pill. Underfunded, it shows the deposit QR and
+ * address in place of the submit button; the button appears only once the
+ * balance clears Perpl's own minimum (`getMinAccountOpenCNS`, not a Gapless
+ * rule — `/activate` enforces the same floor server-side regardless).
+ */
+function CreateStep({
   depositAddress,
   balanceCNS,
   minCNS,
+  pending,
+  onSubmit,
 }: {
   depositAddress: string
   balanceCNS: bigint
   minCNS: bigint
+  pending: boolean
+  onSubmit: () => void
 }) {
   const remainingCNS = minCNS > balanceCNS ? minCNS - balanceCNS : 0n
+  const isFunded = remainingCNS === 0n
   const [copied, setCopied] = useState(false)
 
   async function handleCopy() {
@@ -513,47 +517,39 @@ function FundStep({
     setTimeout(() => setCopied(false), 1500)
   }
 
-  return (
-    <div
-      className="card-big flex min-h-[400px] flex-col justify-between p-6 text-center"
-      style={{ '--card-min-h': '400px' } as React.CSSProperties}
-    >
-      <div>
-        <h2 className="type-title-1 mb-4">Fund your account</h2>
-        <div className="mb-4 flex justify-center">
-          <QrCode data={depositAddress} />
+  if (!isFunded) {
+    return (
+      <div
+        className="card-big flex min-h-[400px] flex-col justify-between p-6 text-center"
+        style={{ '--card-min-h': '400px' } as React.CSSProperties}
+      >
+        <div>
+          <h2 className="type-title-1 mb-4">Create your account</h2>
+          <div className="mb-4 flex justify-center">
+            <QrCode data={depositAddress} />
+          </div>
+          <button
+            type="button"
+            aria-label="Copy deposit address"
+            className={cnm(
+              'type-mono w-full break-all',
+              copied ? 'text-[#32D74B]' : 'text-[#AEAEB2]',
+            )}
+            onClick={handleCopy}
+          >
+            {copied ? 'Copied' : depositAddress}
+          </button>
         </div>
-        <button
-          type="button"
-          aria-label="Copy deposit address"
-          className={cnm(
-            'type-mono w-full break-all',
-            copied ? 'text-[#32D74B]' : 'text-[#AEAEB2]',
-          )}
-          onClick={handleCopy}
-        >
-          {copied ? 'Copied' : depositAddress}
-        </button>
-      </div>
-      <div>
-        <p className="type-num-lg">{formatCNS(balanceCNS)}</p>
-        {remainingCNS > 0n && (
+        <div>
+          <p className="type-num-lg">{formatCNS(balanceCNS)}</p>
           <p className="type-footnote text-[#AEAEB2]">
-            {formatCNS(remainingCNS)} more needed
+            {formatCNS(remainingCNS)} more needed to create your account
           </p>
-        )}
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
 
-function CreateStep({
-  pending,
-  onSubmit,
-}: {
-  pending: boolean
-  onSubmit: () => void
-}) {
   return (
     <div
       className="card-big flex min-h-[400px] flex-col justify-between p-6"
