@@ -103,16 +103,16 @@ function BookRow({
     market.lotDecimals,
   )
   const ratio = Math.min(1, level.sizeScaled / maxSize)
-  const barColor = side === 'bid' ? 'var(--color-up)' : 'var(--color-down)'
+  const barColor =
+    side === 'bid' ? 'var(--color-depth-bid)' : 'var(--color-depth-ask)'
 
   return (
-    <div className="relative flex h-7 items-center justify-end gap-4 px-1">
+    <div className="relative flex h-7 items-center justify-between px-1">
       <div
         className="absolute inset-y-0 right-0 origin-right"
         style={{
           width: '100%',
           backgroundColor: barColor,
-          opacity: 0.12,
           transform: `scaleX(${ratio})`,
         }}
       />
@@ -120,7 +120,7 @@ function BookRow({
         text={price}
         numericValue={level.priceScaled}
         className={cnm(
-          'type-num-sm relative z-10 w-[88px] text-right tabular-nums',
+          'type-num-sm relative z-10 text-left tabular-nums',
           side === 'bid' ? 'text-[#30D158]' : 'text-[#FF6165]',
         )}
       />

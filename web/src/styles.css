@@ -113,6 +113,10 @@
   --color-loss-fill: #ff4245;
   --color-caution: #ffd600;
 
+  /* Order book depth bars (DESIGN 5.14): same hues as --color-up/--color-down, dimmed for a row background. */
+  --color-depth-bid: rgb(48 209 88 / 14%);
+  --color-depth-ask: rgb(255 97 101 / 14%);
+
   /* Triggered/Observed status (DESIGN 2.5): HIG blue, explicitly not purple so a
      status chip never reads as tappable next to the new accent. */
   --color-status-blue-dot: #0091ff;

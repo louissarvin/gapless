@@ -701,7 +701,7 @@ Vertical timeline. Node 12px circle, connector 2px `#3A3A3C`. Done nodes fill wi
 
 ### 5.14 Order book
 
-Rows 28px, `type-num-sm`. Price colored (`#30D158` bids, `#FF6165` asks), size `#AEAEB2`, numbers right-aligned on a fixed column width. Depth bar behind each row, anchored right, `color-depth-bid` or `color-depth-ask`, drawn with `transform: scaleX()`. Mobile stack: asks (reversed) on top, mid price row, bids below.
+Rows 28px, `type-num-sm`. Price colored (`#30D158` bids, `#FF6165` asks), left-aligned; size `#AEAEB2`, right-aligned on a fixed column width (price stays unconstrained-width so it never collides with the bar; left/right split uses the row's full width instead of bunching both columns on one edge). Depth bar behind each row, anchored right, `color-depth-bid` or `color-depth-ask`, drawn with `transform: scaleX()`. Mobile stack: asks (reversed) on top, mid price row, bids below.
 
 ## 6. Depth and elevation
 
