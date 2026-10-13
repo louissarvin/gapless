@@ -51,7 +51,10 @@ COPY src ./src
 COPY scripts ./scripts
 RUN mkdir -p /app/data && chown bun:bun /app/data && chmod 0750 /app/data
 USER bun
-VOLUME ["/app/data"]
+# No VOLUME instruction: Railway's Dockerfile builder rejects it ("docker VOLUME ... is not
+# supported, use Railway Volumes"). docker-compose (local/self-hosted) still gets a persistent
+# /app/data from its own named volume mount; on Railway, attach a Railway Volume at /app/data
+# in each service's Settings -> Networking/Volumes instead.
 # 3700: Fastify HTTP API. 3701: Bun.serve /ws/market (route it at the reverse proxy).
 EXPOSE 3700 3701
 ENTRYPOINT ["bun"]
