@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import type { Address } from 'viem'
 import { toViemAccount } from '@category-labs/mera/viem'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Check, Copy } from 'lucide-react'
@@ -77,7 +78,7 @@ function OnboardPage() {
   const navigate = useNavigate()
   const { ownerSession, operatorSession } = useAccountSession()
 
-  const ownerAddress = useMemo(
+  const liveOwnerAddress = useMemo(
     () => (ownerSession ? toViemAccount(ownerSession).address : null),
     [ownerSession],
   )
@@ -85,6 +86,14 @@ function OnboardPage() {
     () => (operatorSession ? toViemAccount(operatorSession).address : null),
     [operatorSession],
   )
+  // The owner session ends right after it signs once (ARCHITECTURE 8.3), but
+  // its address stays needed for every later step (chain reads, the pending
+  // payload check). Latch it so the UI never treats "owner already signed"
+  // as "no session" and bounces back to the unlock card.
+  const [ownerAddress, setOwnerAddress] = useState<Address | null>(null)
+  useEffect(() => {
+    if (liveOwnerAddress) setOwnerAddress(liveOwnerAddress)
+  }, [liveOwnerAddress])
 
   const {
     data: chainState,
@@ -110,14 +119,15 @@ function OnboardPage() {
     if (import.meta.env.DEV) writeDevBypassStage(devBypassStage)
   }, [devBypassStage])
 
-  if (!ownerSession || !operatorSession || !ownerAddress || !operatorAddress) {
+  if (!ownerAddress || !operatorSession || !operatorAddress) {
     // ARCHITECTURE 5.1: "No session" is the first row of the state table,
-    // checked before any chain read. There is nothing to read yet.
+    // checked before any chain read. There is nothing to read yet. A live
+    // `ownerSession` is not required here: it already ended right after
+    // signing once (handleSignCreateAccount below) and is never needed again.
     return <UnlockCard />
   }
   // Rebind as non-null consts: TS does not narrow outer closures captured by
   // the nested handlers below (they run later, as event callbacks).
-  const ownerSessionSafe = ownerSession
   const ownerAddr = ownerAddress
   const operatorAddr = operatorAddress
 
@@ -168,6 +178,10 @@ function OnboardPage() {
   prevIndexRef.current = activeIndex
 
   async function handleSignCreateAccount() {
+    // Only reachable from the "keys" step, which is only rendered while the
+    // owner session is still live (it has not signed yet), but the outer
+    // guard above no longer proves that at the type level.
+    if (!ownerSession) return
     setActionError(null)
     setPending(true)
     try {
@@ -179,7 +193,7 @@ function OnboardPage() {
       }
       const expiry = state.nowS + SPONSOR_GRANT.expirySeconds
       const deadline = state.nowS + SPONSOR_GRANT.deadlineSeconds
-      const owner = new OwnerScope(ownerSessionSafe)
+      const owner = new OwnerScope(ownerSession)
       const sig = await owner.signCreateAccount(
         state.factoryDomain,
         expectedDomain,
